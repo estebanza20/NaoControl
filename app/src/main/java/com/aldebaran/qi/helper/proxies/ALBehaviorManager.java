@@ -1,0 +1,781 @@
+/**
+ * Copyright (c) 2015 Aldebaran Robotics. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the COPYING file.
+ * Created by epinault and tcruz
+ */
+package com.aldebaran.qi.helper.proxies;
+
+import com.aldebaran.qi.*;
+import com.aldebaran.qi.helper.*;
+import java.util.List;
+import java.util.Map;
+
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+/**
+* This module is intended to manage behaviors. With this module, you can load, start, stop behaviors, add default behaviors or remove them. 
+
+* @see <a href="http://doc.aldebaran.lan/doc/master/aldeb-doc/naoqi/core/albehaviormanager.html#albehaviormanager">NAOqi APIs for ALBehaviorManager </a>
+* NAOqi V2.4.x
+*/
+public class ALBehaviorManager extends ALProxy {
+
+    private AsyncALBehaviorManager asyncProxy;
+
+    public ALBehaviorManager(Session session) throws Exception{
+        super(session);
+        asyncProxy = new AsyncALBehaviorManager();
+	    asyncProxy.setService(getService());
+    }
+
+    /**
+     * Get the async version of this proxy
+     *
+	 * @return a AsyncALBehaviorManager object
+	 */
+    public AsyncALBehaviorManager async() {
+        return asyncProxy;
+    }
+
+    /**
+    * Get the nature of the given behavior.
+    * 
+    * @param behavior  The local path towards a behavior or a directory.
+    * @return The nature of the behavior.
+    */
+    public String getBehaviorNature(String behavior) throws DynamicCallException, ExecutionException {
+        return (String)call("getBehaviorNature", behavior).get();
+    }
+
+    /**
+    * Get default behaviors
+    * 
+    * @return Return default behaviors
+    */
+    public List<String> getDefaultBehaviors() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getDefaultBehaviors").get();
+    }
+
+    /**
+    * Get running behaviors
+    * 
+    * @return Return running behaviors
+    */
+    public List<String> getRunningBehaviors() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getRunningBehaviors").get();
+    }
+
+    /**
+    * Get tags found on installed behaviors.
+    * 
+    * @return The list of tags found.
+    */
+    public List<String> getTagList() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getTagList").get();
+    }
+
+    /**
+    * Get tags found on the given behavior.
+    * 
+    * @param behavior  The local path towards a behavior or a directory.
+    * @return The list of tags found.
+    */
+    public List<String> getBehaviorTags(String behavior) throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getBehaviorTags", behavior).get();
+    }
+
+    /**
+    * Get loaded behaviors
+    * 
+    * @return Return loaded behaviors
+    */
+    public List<String> getLoadedBehaviors() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getLoadedBehaviors").get();
+    }
+
+    /**
+    * Set the given behavior as default
+    * 
+    * @param behavior  Behavior name 
+    */
+    public void addDefaultBehavior(String behavior) throws DynamicCallException, ExecutionException{
+        call("addDefaultBehavior", behavior).get();
+    }
+
+    /**
+    * Remove the given behavior from the default behaviors
+    * 
+    * @param behavior  Behavior name 
+    */
+    public void removeDefaultBehavior(String behavior) throws DynamicCallException, ExecutionException{
+        call("removeDefaultBehavior", behavior).get();
+    }
+
+    /**
+    * Play default behaviors
+    * 
+    */
+    public void playDefaultProject() throws DynamicCallException, ExecutionException{
+        call("playDefaultProject").get();
+    }
+
+    /**
+    * Find out the actual <package>/<behavior> path behind a behavior name.
+    * 
+    * @param name  name of a behavior
+    * @return The actual <package>/<behavior> path if found, else an empty string. Throws an ALERROR if two behavior names conflicted.
+    */
+    public String resolveBehaviorName(String name) throws DynamicCallException, ExecutionException {
+        return (String)call("resolveBehaviorName", name).get();
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Boolean isStatsEnabled() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isStatsEnabled").get();
+    }
+
+    /**
+    * 
+    * 
+    */
+    public void clearStats() throws DynamicCallException, ExecutionException{
+        call("clearStats").get();
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Boolean isTraceEnabled() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isTraceEnabled").get();
+    }
+
+    /**
+    * Exits and unregisters the module.
+    * 
+    */
+    public void exit() throws DynamicCallException, ExecutionException{
+        call("exit").get();
+    }
+
+    /**
+    * Returns the version of the module.
+    * 
+    * @return A string containing the version of the module.
+    */
+    public String version() throws DynamicCallException, ExecutionException {
+        return (String)call("version").get();
+    }
+
+    /**
+    * Just a ping. Always returns true
+    * 
+    * @return returns true
+    */
+    public Boolean ping() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("ping").get();
+    }
+
+    /**
+    * Retrieves the module's method list.
+    * 
+    * @return An array of method names.
+    */
+    public List<String> getMethodList() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getMethodList").get();
+    }
+
+    /**
+    * Retrieves a method's description.
+    * 
+    * @param methodName  The name of the method.
+    * @return A structure containing the method's description.
+    */
+    public Object getMethodHelp(String methodName) throws DynamicCallException, ExecutionException {
+        return (Object)call("getMethodHelp", methodName).get();
+    }
+
+    /**
+    * Retrieves the module's description.
+    * 
+    * @return A structure describing the module.
+    */
+    public Object getModuleHelp() throws DynamicCallException, ExecutionException {
+        return (Object)call("getModuleHelp").get();
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post'
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @param timeoutPeriod  The timeout period in ms. To wait indefinately, use a timeoutPeriod of zero.
+    * @return True if the timeout period terminated. False if the method returned.
+    */
+    public Boolean wait(Integer id, Integer timeoutPeriod) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("wait", id, timeoutPeriod).get();
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post', returns a cancelable future
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    */
+    public void wait(Integer id) throws DynamicCallException, ExecutionException{
+        call("wait", id).get();
+    }
+
+    /**
+    * Returns true if the method is currently running.
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @return True if the method is currently running
+    */
+    public Boolean isRunning(Integer id) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isRunning", id).get();
+    }
+
+    /**
+    * returns true if the method is currently running
+    * 
+    * @param id  the ID of the method to wait for
+    */
+    public void stop(Integer id) throws DynamicCallException, ExecutionException{
+        call("stop", id).get();
+    }
+
+    /**
+    * Gets the name of the parent broker.
+    * 
+    * @return The name of the parent broker.
+    */
+    public String getBrokerName() throws DynamicCallException, ExecutionException {
+        return (String)call("getBrokerName").get();
+    }
+
+    /**
+    * Gets the method usage string. This summarises how to use the method.
+    * 
+    * @param name  The name of the method.
+    * @return A string that summarises the usage of the method.
+    */
+    public String getUsage(String name) throws DynamicCallException, ExecutionException {
+        return (String)call("getUsage", name).get();
+    }
+
+    /**
+    * Load a behavior
+    * 
+    * @param behavior  Behavior name 
+    * @return Returns true if it was successfully loaded.
+    */
+    public Boolean preloadBehavior(String behavior) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("preloadBehavior", behavior).get();
+    }
+
+    /**
+    * Starts a behavior, returns when started.
+    * 
+    * @param behavior  Behavior name 
+    */
+    public void startBehavior(String behavior) throws DynamicCallException, ExecutionException{
+        call("startBehavior", behavior).get();
+    }
+
+    /**
+    * Runs a behavior, returns when finished
+    * 
+    * @param behavior  Behavior name 
+    */
+    public void runBehavior(String behavior) throws DynamicCallException, ExecutionException{
+        call("runBehavior", behavior).get();
+    }
+
+    /**
+    * Stop a behavior
+    * 
+    * @param behavior  Behavior name 
+    */
+    public void stopBehavior(String behavior) throws DynamicCallException, ExecutionException{
+        call("stopBehavior", behavior).get();
+    }
+
+    /**
+    * Stop all behaviors
+    * 
+    */
+    public void stopAllBehaviors() throws DynamicCallException, ExecutionException{
+        call("stopAllBehaviors").get();
+    }
+
+    /**
+    * Tell if supplied name corresponds to a behavior that has been installed
+    * 
+    * @param name  The behavior directory name
+    * @return Returns true if it is a valid behavior
+    */
+    public Boolean isBehaviorInstalled(String name) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isBehaviorInstalled", name).get();
+    }
+
+    /**
+    * Tell if the supplied namecorresponds to an existing behavior.
+    * 
+    * @param prefixedBehavior  Prefixed behavior or just behavior's name (latter usage deprecated, in this case the behavior is searched for amongst user's behaviors, then in system behaviors) DEPRECATED in favor of ALBehaviorManager.isBehaviorInstalled.
+    * @return Returns true if it is an existing behavior
+    */
+    public Boolean isBehaviorPresent(String prefixedBehavior) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isBehaviorPresent", prefixedBehavior).get();
+    }
+
+    /**
+    * Get behaviors
+    * 
+    * @return Returns the list of behaviors prefixed by their type (User/ or System/). DEPRECATED in favor of ALBehaviorManager.getInstalledBehaviors.
+    */
+    public List<String> getBehaviorNames() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getBehaviorNames").get();
+    }
+
+    /**
+    * Get user's behaviors
+    * 
+    * @return Returns the list of user's behaviors prefixed by User/. DEPRECATED in favor of ALBehaviorManager.getInstalledBehaviors.
+    */
+    public List<String> getUserBehaviorNames() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getUserBehaviorNames").get();
+    }
+
+    /**
+    * Get system behaviors
+    * 
+    * @return Returns the list of system behaviors prefixed by System/. DEPRECATED in favor of ALBehaviorManager.getInstalledBehaviors.
+    */
+    public List<String> getSystemBehaviorNames() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getSystemBehaviorNames").get();
+    }
+
+    /**
+    * Get installed behaviors directories names
+    * 
+    * @return Returns the behaviors list
+    */
+    public List<String> getInstalledBehaviors() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getInstalledBehaviors").get();
+    }
+
+    /**
+    * Get installed behaviors directories names and filter it by tag.
+    * 
+    * @param tag  A tag to filter the list with.
+    * @return Returns the behaviors list
+    */
+    public List<String> getBehaviorsByTag(String tag) throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getBehaviorsByTag", tag).get();
+    }
+
+    /**
+    * Tell if supplied name corresponds to a running behavior
+    * 
+    * @param behavior  Behavior name 
+    * @return Returns true if it is a running behavior
+    */
+    public Boolean isBehaviorRunning(String behavior) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isBehaviorRunning", behavior).get();
+    }
+
+    /**
+    * Tell if supplied name corresponds to a loaded behavior
+    * 
+    * @param behavior  Behavior name 
+    * @return Returns true if it is a loaded behavior
+    */
+    public Boolean isBehaviorLoaded(String behavior) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isBehaviorLoaded", behavior).get();
+    }
+
+
+    public class AsyncALBehaviorManager extends ALProxy {
+
+        protected AsyncALBehaviorManager(){
+            super();
+        }
+    
+    /**
+    * Get the nature of the given behavior.
+    * 
+    * @param behavior  The local path towards a behavior or a directory.
+    * @return The nature of the behavior.
+    */
+    public Future<String> getBehaviorNature(String behavior) throws DynamicCallException, ExecutionException {
+        return call("getBehaviorNature", behavior);
+    }
+
+    /**
+    * Get default behaviors
+    * 
+    * @return Return default behaviors
+    */
+    public Future<List<String>> getDefaultBehaviors() throws DynamicCallException, ExecutionException {
+        return call("getDefaultBehaviors");
+    }
+
+    /**
+    * Get running behaviors
+    * 
+    * @return Return running behaviors
+    */
+    public Future<List<String>> getRunningBehaviors() throws DynamicCallException, ExecutionException {
+        return call("getRunningBehaviors");
+    }
+
+    /**
+    * Get tags found on installed behaviors.
+    * 
+    * @return The list of tags found.
+    */
+    public Future<List<String>> getTagList() throws DynamicCallException, ExecutionException {
+        return call("getTagList");
+    }
+
+    /**
+    * Get tags found on the given behavior.
+    * 
+    * @param behavior  The local path towards a behavior or a directory.
+    * @return The list of tags found.
+    */
+    public Future<List<String>> getBehaviorTags(String behavior) throws DynamicCallException, ExecutionException {
+        return call("getBehaviorTags", behavior);
+    }
+
+    /**
+    * Get loaded behaviors
+    * 
+    * @return Return loaded behaviors
+    */
+    public Future<List<String>> getLoadedBehaviors() throws DynamicCallException, ExecutionException {
+        return call("getLoadedBehaviors");
+    }
+
+    /**
+    * Set the given behavior as default
+    * 
+    * @param behavior  Behavior name 
+    * @return The Future
+    */
+    public Future<Void> addDefaultBehavior(String behavior) throws DynamicCallException, ExecutionException{
+        return call("addDefaultBehavior", behavior);
+    }
+
+    /**
+    * Remove the given behavior from the default behaviors
+    * 
+    * @param behavior  Behavior name 
+    * @return The Future
+    */
+    public Future<Void> removeDefaultBehavior(String behavior) throws DynamicCallException, ExecutionException{
+        return call("removeDefaultBehavior", behavior);
+    }
+
+    /**
+    * Play default behaviors
+    * 
+    * @return The Future
+    */
+    public Future<Void> playDefaultProject() throws DynamicCallException, ExecutionException{
+        return call("playDefaultProject");
+    }
+
+    /**
+    * Find out the actual <package>/<behavior> path behind a behavior name.
+    * 
+    * @param name  name of a behavior
+    * @return The actual <package>/<behavior> path if found, else an empty string. Throws an ALERROR if two behavior names conflicted.
+    */
+    public Future<String> resolveBehaviorName(String name) throws DynamicCallException, ExecutionException {
+        return call("resolveBehaviorName", name);
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Future<Boolean> isStatsEnabled() throws DynamicCallException, ExecutionException {
+        return call("isStatsEnabled");
+    }
+
+    /**
+    * 
+    * 
+    * @return The Future
+    */
+    public Future<Void> clearStats() throws DynamicCallException, ExecutionException{
+        return call("clearStats");
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Future<Boolean> isTraceEnabled() throws DynamicCallException, ExecutionException {
+        return call("isTraceEnabled");
+    }
+
+    /**
+    * Exits and unregisters the module.
+    * 
+    * @return The Future
+    */
+    public Future<Void> exit() throws DynamicCallException, ExecutionException{
+        return call("exit");
+    }
+
+    /**
+    * Returns the version of the module.
+    * 
+    * @return A string containing the version of the module.
+    */
+    public Future<String> version() throws DynamicCallException, ExecutionException {
+        return call("version");
+    }
+
+    /**
+    * Just a ping. Always returns true
+    * 
+    * @return returns true
+    */
+    public Future<Boolean> ping() throws DynamicCallException, ExecutionException {
+        return call("ping");
+    }
+
+    /**
+    * Retrieves the module's method list.
+    * 
+    * @return An array of method names.
+    */
+    public Future<List<String>> getMethodList() throws DynamicCallException, ExecutionException {
+        return call("getMethodList");
+    }
+
+    /**
+    * Retrieves a method's description.
+    * 
+    * @param methodName  The name of the method.
+    * @return A structure containing the method's description.
+    */
+    public Future<Object> getMethodHelp(String methodName) throws DynamicCallException, ExecutionException {
+        return call("getMethodHelp", methodName);
+    }
+
+    /**
+    * Retrieves the module's description.
+    * 
+    * @return A structure describing the module.
+    */
+    public Future<Object> getModuleHelp() throws DynamicCallException, ExecutionException {
+        return call("getModuleHelp");
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post'
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @param timeoutPeriod  The timeout period in ms. To wait indefinately, use a timeoutPeriod of zero.
+    * @return True if the timeout period terminated. False if the method returned.
+    */
+    public Future<Boolean> wait(Integer id, Integer timeoutPeriod) throws DynamicCallException, ExecutionException {
+        return call("wait", id, timeoutPeriod);
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post', returns a cancelable future
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @return The Future
+    */
+    public Future<Void> wait(Integer id) throws DynamicCallException, ExecutionException{
+        return call("wait", id);
+    }
+
+    /**
+    * Returns true if the method is currently running.
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @return True if the method is currently running
+    */
+    public Future<Boolean> isRunning(Integer id) throws DynamicCallException, ExecutionException {
+        return call("isRunning", id);
+    }
+
+    /**
+    * returns true if the method is currently running
+    * 
+    * @param id  the ID of the method to wait for
+    * @return The Future
+    */
+    public Future<Void> stop(Integer id) throws DynamicCallException, ExecutionException{
+        return call("stop", id);
+    }
+
+    /**
+    * Gets the name of the parent broker.
+    * 
+    * @return The name of the parent broker.
+    */
+    public Future<String> getBrokerName() throws DynamicCallException, ExecutionException {
+        return call("getBrokerName");
+    }
+
+    /**
+    * Gets the method usage string. This summarises how to use the method.
+    * 
+    * @param name  The name of the method.
+    * @return A string that summarises the usage of the method.
+    */
+    public Future<String> getUsage(String name) throws DynamicCallException, ExecutionException {
+        return call("getUsage", name);
+    }
+
+    /**
+    * Load a behavior
+    * 
+    * @param behavior  Behavior name 
+    * @return Returns true if it was successfully loaded.
+    */
+    public Future<Boolean> preloadBehavior(String behavior) throws DynamicCallException, ExecutionException {
+        return call("preloadBehavior", behavior);
+    }
+
+    /**
+    * Starts a behavior, returns when started.
+    * 
+    * @param behavior  Behavior name 
+    * @return The Future
+    */
+    public Future<Void> startBehavior(String behavior) throws DynamicCallException, ExecutionException{
+        return call("startBehavior", behavior);
+    }
+
+    /**
+    * Runs a behavior, returns when finished
+    * 
+    * @param behavior  Behavior name 
+    * @return The Future
+    */
+    public Future<Void> runBehavior(String behavior) throws DynamicCallException, ExecutionException{
+        return call("runBehavior", behavior);
+    }
+
+    /**
+    * Stop a behavior
+    * 
+    * @param behavior  Behavior name 
+    * @return The Future
+    */
+    public Future<Void> stopBehavior(String behavior) throws DynamicCallException, ExecutionException{
+        return call("stopBehavior", behavior);
+    }
+
+    /**
+    * Stop all behaviors
+    * 
+    * @return The Future
+    */
+    public Future<Void> stopAllBehaviors() throws DynamicCallException, ExecutionException{
+        return call("stopAllBehaviors");
+    }
+
+    /**
+    * Tell if supplied name corresponds to a behavior that has been installed
+    * 
+    * @param name  The behavior directory name
+    * @return Returns true if it is a valid behavior
+    */
+    public Future<Boolean> isBehaviorInstalled(String name) throws DynamicCallException, ExecutionException {
+        return call("isBehaviorInstalled", name);
+    }
+
+    /**
+    * Tell if the supplied namecorresponds to an existing behavior.
+    * 
+    * @param prefixedBehavior  Prefixed behavior or just behavior's name (latter usage deprecated, in this case the behavior is searched for amongst user's behaviors, then in system behaviors) DEPRECATED in favor of ALBehaviorManager.isBehaviorInstalled.
+    * @return Returns true if it is an existing behavior
+    */
+    public Future<Boolean> isBehaviorPresent(String prefixedBehavior) throws DynamicCallException, ExecutionException {
+        return call("isBehaviorPresent", prefixedBehavior);
+    }
+
+    /**
+    * Get behaviors
+    * 
+    * @return Returns the list of behaviors prefixed by their type (User/ or System/). DEPRECATED in favor of ALBehaviorManager.getInstalledBehaviors.
+    */
+    public Future<List<String>> getBehaviorNames() throws DynamicCallException, ExecutionException {
+        return call("getBehaviorNames");
+    }
+
+    /**
+    * Get user's behaviors
+    * 
+    * @return Returns the list of user's behaviors prefixed by User/. DEPRECATED in favor of ALBehaviorManager.getInstalledBehaviors.
+    */
+    public Future<List<String>> getUserBehaviorNames() throws DynamicCallException, ExecutionException {
+        return call("getUserBehaviorNames");
+    }
+
+    /**
+    * Get system behaviors
+    * 
+    * @return Returns the list of system behaviors prefixed by System/. DEPRECATED in favor of ALBehaviorManager.getInstalledBehaviors.
+    */
+    public Future<List<String>> getSystemBehaviorNames() throws DynamicCallException, ExecutionException {
+        return call("getSystemBehaviorNames");
+    }
+
+    /**
+    * Get installed behaviors directories names
+    * 
+    * @return Returns the behaviors list
+    */
+    public Future<List<String>> getInstalledBehaviors() throws DynamicCallException, ExecutionException {
+        return call("getInstalledBehaviors");
+    }
+
+    /**
+    * Get installed behaviors directories names and filter it by tag.
+    * 
+    * @param tag  A tag to filter the list with.
+    * @return Returns the behaviors list
+    */
+    public Future<List<String>> getBehaviorsByTag(String tag) throws DynamicCallException, ExecutionException {
+        return call("getBehaviorsByTag", tag);
+    }
+
+    /**
+    * Tell if supplied name corresponds to a running behavior
+    * 
+    * @param behavior  Behavior name 
+    * @return Returns true if it is a running behavior
+    */
+    public Future<Boolean> isBehaviorRunning(String behavior) throws DynamicCallException, ExecutionException {
+        return call("isBehaviorRunning", behavior);
+    }
+
+    /**
+    * Tell if supplied name corresponds to a loaded behavior
+    * 
+    * @param behavior  Behavior name 
+    * @return Returns true if it is a loaded behavior
+    */
+    public Future<Boolean> isBehaviorLoaded(String behavior) throws DynamicCallException, ExecutionException {
+        return call("isBehaviorLoaded", behavior);
+    }
+
+    }
+}
+    

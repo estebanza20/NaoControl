@@ -1,0 +1,916 @@
+/**
+ * Copyright (c) 2015 Aldebaran Robotics. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the COPYING file.
+ * Created by epinault and tcruz
+ */
+package com.aldebaran.qi.helper.proxies;
+
+import com.aldebaran.qi.*;
+import com.aldebaran.qi.helper.*;
+import java.util.List;
+import java.util.Map;
+
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+/**
+* ALColorBlobDetection is a module which can detect blobs of a certain color.
+  The output value is written in ALMemory has a Tracker microEvent.
+ 
+* @see <a href="http://doc.aldebaran.lan/doc/master/aldeb-doc/naoqi/vision/alcolorblobdetection.html#alcolorblobdetection">NAOqi APIs for ALColorBlobDetection </a>
+* NAOqi V2.4.x
+*/
+public class ALColorBlobDetection extends ALProxy {
+
+    private AsyncALColorBlobDetection asyncProxy;
+
+    public ALColorBlobDetection(Session session) throws Exception{
+        super(session);
+        asyncProxy = new AsyncALColorBlobDetection();
+	    asyncProxy.setService(getService());
+    }
+
+    /**
+     * Get the async version of this proxy
+     *
+	 * @return a AsyncALColorBlobDetection object
+	 */
+    public AsyncALColorBlobDetection async() {
+        return asyncProxy;
+    }
+
+    /**
+    * Gets extractor framerate
+    * 
+    * @return Current value of the framerate of the extractor
+    */
+    public Integer getFrameRate() throws DynamicCallException, ExecutionException {
+        return (Integer)call("getFrameRate").get();
+    }
+
+    /**
+    * Changes the pause status of the extractor
+    * 
+    * @param paused  New pause satus
+    */
+    public void pause(Boolean paused) throws DynamicCallException, ExecutionException{
+        call("pause", paused).get();
+    }
+
+    /**
+    * Sets the extractor framerate for all the subscribers
+    * 
+    * @param framerate  New framerate
+    * @return True if the update succeeded, False if not
+    */
+    public Boolean setFrameRate(Integer framerate) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("setFrameRate", framerate).get();
+    }
+
+    /**
+    * Color parameter setting
+    * 
+    * @param r  The R component in RGB of the color to find
+    * @param g  The G component in RGB of the color to find
+    * @param b  The B component in RGB of the color to find
+    * @param colorThres  The color threshold
+    */
+    public void setColor(Integer r, Integer g, Integer b, Integer colorThres) throws DynamicCallException, ExecutionException{
+        call("setColor", r, g, b, colorThres).get();
+    }
+
+    /**
+    * Object parameter setting
+    * 
+    * @param minSize  The minimum size of the cluster to find
+    * @param span  The span of the object in meters
+    */
+    public void setObjectProperties(Integer minSize, Float span) throws DynamicCallException, ExecutionException{
+        call("setObjectProperties", minSize, span).get();
+    }
+
+    /**
+    * Sets extractor active camera
+    * 
+    * @param cameraId  Id of the camera that will become the active camera
+    * @return True if the update succeeded, False if not
+    */
+    public Boolean setActiveCamera(Integer cameraId) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("setActiveCamera", cameraId).get();
+    }
+
+    /**
+    * Send back the x,y,radius of the circle if any
+    * 
+    * @return The circle as x,y,radius in image relative coordinates (x,radius divided by rows and y by cols)
+    */
+    public Object getCircle() throws DynamicCallException, ExecutionException {
+        return (Object)call("getCircle").get();
+    }
+
+    /**
+    * Get the camera auto exposure mode
+    * 
+    * @return A flag saying the exposure is auto or not
+    */
+    public Boolean getAutoExposure() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("getAutoExposure").get();
+    }
+
+    /**
+    * Set the camera auto exposure to on
+    * 
+    * @param mode  Whether the exposure is auto or not
+    */
+    public void setAutoExposure(Boolean mode) throws DynamicCallException, ExecutionException{
+        call("setAutoExposure", mode).get();
+    }
+
+    /**
+    * DEPRECATED: Sets pause and resolution
+    * 
+    * @param paramName  Name of the parameter to set
+    * @param value  New value
+    */
+    public void setParameter(String paramName, Object value) throws DynamicCallException, ExecutionException{
+        call("setParameter", paramName, value).get();
+    }
+
+    /**
+    * Gets extractor resolution
+    * 
+    * @return Current value of the resolution of the extractor
+    */
+    public Integer getResolution() throws DynamicCallException, ExecutionException {
+        return (Integer)call("getResolution").get();
+    }
+
+    /**
+    * Gets extractor active camera
+    * 
+    * @return Id of the current active camera of the extractor
+    */
+    public Integer getActiveCamera() throws DynamicCallException, ExecutionException {
+        return (Integer)call("getActiveCamera").get();
+    }
+
+    /**
+    * Sets extractor resolution
+    * 
+    * @param resolution  New resolution
+    * @return True if the update succeeded, False if not
+    */
+    public Boolean setResolution(Integer resolution) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("setResolution", resolution).get();
+    }
+
+    /**
+    * Gets extractor pause status
+    * 
+    * @return True if the extractor is paused, False if not
+    */
+    public Boolean isPaused() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isPaused").get();
+    }
+
+    /**
+    * Gets extractor running status
+    * 
+    * @return True if the extractor is currently processing images, False if not
+    */
+    public Boolean isProcessing() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isProcessing").get();
+    }
+
+    /**
+    * Object parameter setting
+    * 
+    * @param minSize  The minimum size of the cluster to find
+    * @param span  The span of the object in meters
+    * @param shape  The shape of the object
+    */
+    public void setObjectProperties(Integer minSize, Float span, String shape) throws DynamicCallException, ExecutionException{
+        call("setObjectProperties", minSize, span, shape).get();
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Boolean isStatsEnabled() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isStatsEnabled").get();
+    }
+
+    /**
+    * 
+    * 
+    */
+    public void clearStats() throws DynamicCallException, ExecutionException{
+        call("clearStats").get();
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Boolean isTraceEnabled() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isTraceEnabled").get();
+    }
+
+    /**
+    * Exits and unregisters the module.
+    * 
+    */
+    public void exit() throws DynamicCallException, ExecutionException{
+        call("exit").get();
+    }
+
+    /**
+    * Returns the version of the module.
+    * 
+    * @return A string containing the version of the module.
+    */
+    public String version() throws DynamicCallException, ExecutionException {
+        return (String)call("version").get();
+    }
+
+    /**
+    * Just a ping. Always returns true
+    * 
+    * @return returns true
+    */
+    public Boolean ping() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("ping").get();
+    }
+
+    /**
+    * Retrieves the module's method list.
+    * 
+    * @return An array of method names.
+    */
+    public List<String> getMethodList() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getMethodList").get();
+    }
+
+    /**
+    * Retrieves a method's description.
+    * 
+    * @param methodName  The name of the method.
+    * @return A structure containing the method's description.
+    */
+    public Object getMethodHelp(String methodName) throws DynamicCallException, ExecutionException {
+        return (Object)call("getMethodHelp", methodName).get();
+    }
+
+    /**
+    * Retrieves the module's description.
+    * 
+    * @return A structure describing the module.
+    */
+    public Object getModuleHelp() throws DynamicCallException, ExecutionException {
+        return (Object)call("getModuleHelp").get();
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post'
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @param timeoutPeriod  The timeout period in ms. To wait indefinately, use a timeoutPeriod of zero.
+    * @return True if the timeout period terminated. False if the method returned.
+    */
+    public Boolean wait(Integer id, Integer timeoutPeriod) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("wait", id, timeoutPeriod).get();
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post', returns a cancelable future
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    */
+    public void wait(Integer id) throws DynamicCallException, ExecutionException{
+        call("wait", id).get();
+    }
+
+    /**
+    * Returns true if the method is currently running.
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @return True if the method is currently running
+    */
+    public Boolean isRunning(Integer id) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isRunning", id).get();
+    }
+
+    /**
+    * returns true if the method is currently running
+    * 
+    * @param id  the ID of the method to wait for
+    */
+    public void stop(Integer id) throws DynamicCallException, ExecutionException{
+        call("stop", id).get();
+    }
+
+    /**
+    * Gets the name of the parent broker.
+    * 
+    * @return The name of the parent broker.
+    */
+    public String getBrokerName() throws DynamicCallException, ExecutionException {
+        return (String)call("getBrokerName").get();
+    }
+
+    /**
+    * Gets the method usage string. This summarises how to use the method.
+    * 
+    * @param name  The name of the method.
+    * @return A string that summarises the usage of the method.
+    */
+    public String getUsage(String name) throws DynamicCallException, ExecutionException {
+        return (String)call("getUsage", name).get();
+    }
+
+    /**
+    * Subscribes to the extractor. This causes the extractor to start writing information to memory using the keys described by getOutputNames(). These can be accessed in memory using ALMemory.getData("keyName"). In many cases you can avoid calling subscribe on the extractor by just calling ALMemory.subscribeToEvent() supplying a callback method. This will automatically subscribe to the extractor for you.
+    * 
+    * @param name  Name of the module which subscribes.
+    * @param period  Refresh period (in milliseconds) if relevant.
+    * @param precision  Precision of the extractor if relevant.
+    */
+    public void subscribe(String name, Integer period, Float precision) throws DynamicCallException, ExecutionException{
+        call("subscribe", name, period, precision).get();
+    }
+
+    /**
+    * Subscribes to the extractor. This causes the extractor to start writing information to memory using the keys described by getOutputNames(). These can be accessed in memory using ALMemory.getData("keyName"). In many cases you can avoid calling subscribe on the extractor by just calling ALMemory.subscribeToEvent() supplying a callback method. This will automatically subscribe to the extractor for you.
+    * 
+    * @param name  Name of the module which subscribes.
+    */
+    public void subscribe(String name) throws DynamicCallException, ExecutionException{
+        call("subscribe", name).get();
+    }
+
+    /**
+    * Unsubscribes from the extractor.
+    * 
+    * @param name  Name of the module which had subscribed.
+    */
+    public void unsubscribe(String name) throws DynamicCallException, ExecutionException{
+        call("unsubscribe", name).get();
+    }
+
+    /**
+    * Updates the period if relevant.
+    * 
+    * @param name  Name of the module which has subscribed.
+    * @param period  Refresh period (in milliseconds).
+    */
+    public void updatePeriod(String name, Integer period) throws DynamicCallException, ExecutionException{
+        call("updatePeriod", name, period).get();
+    }
+
+    /**
+    * Updates the precision if relevant.
+    * 
+    * @param name  Name of the module which has subscribed.
+    * @param precision  Precision of the extractor.
+    */
+    public void updatePrecision(String name, Float precision) throws DynamicCallException, ExecutionException{
+        call("updatePrecision", name, precision).get();
+    }
+
+    /**
+    * Gets the current period.
+    * 
+    * @return Refresh period (in milliseconds).
+    */
+    public Integer getCurrentPeriod() throws DynamicCallException, ExecutionException {
+        return (Integer)call("getCurrentPeriod").get();
+    }
+
+    /**
+    * Gets the current precision.
+    * 
+    * @return Precision of the extractor.
+    */
+    public Float getCurrentPrecision() throws DynamicCallException, ExecutionException {
+        return (Float)call("getCurrentPrecision").get();
+    }
+
+    /**
+    * Gets the period for a specific subscription.
+    * 
+    * @param name  Name of the module which has subscribed.
+    * @return Refresh period (in milliseconds).
+    */
+    public Integer getMyPeriod(String name) throws DynamicCallException, ExecutionException {
+        return (Integer)call("getMyPeriod", name).get();
+    }
+
+    /**
+    * Gets the precision for a specific subscription.
+    * 
+    * @param name  name of the module which has subscribed
+    * @return precision of the extractor
+    */
+    public Float getMyPrecision(String name) throws DynamicCallException, ExecutionException {
+        return (Float)call("getMyPrecision", name).get();
+    }
+
+    /**
+    * Gets the parameters given by the module.
+    * 
+    * @return Array of names and parameters of all subscribers.
+    */
+    public Object getSubscribersInfo() throws DynamicCallException, ExecutionException {
+        return (Object)call("getSubscribersInfo").get();
+    }
+
+    /**
+    * Get the list of values updated in ALMemory.
+    * 
+    * @return Array of values updated by this extractor in ALMemory
+    */
+    public List<String> getOutputNames() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getOutputNames").get();
+    }
+
+    /**
+    * Get the list of events updated in ALMemory.
+    * 
+    * @return Array of events updated by this extractor in ALMemory
+    */
+    public List<String> getEventList() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getEventList").get();
+    }
+
+    /**
+    * Get the list of events updated in ALMemory.
+    * 
+    * @return Array of events updated by this extractor in ALMemory
+    */
+    public List<String> getMemoryKeyList() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getMemoryKeyList").get();
+    }
+
+    /**
+    * Sets the extractor framerate for a chosen subscriber
+    * 
+    * @param subscriberName  Name of the subcriber
+    * @param framerate  New framerate
+    * @return True if the update succeeded, False if not
+    */
+    public Boolean setFrameRate(String subscriberName, Integer framerate) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("setFrameRate", subscriberName, framerate).get();
+    }
+
+
+    public class AsyncALColorBlobDetection extends ALProxy {
+
+        protected AsyncALColorBlobDetection(){
+            super();
+        }
+    
+    /**
+    * Gets extractor framerate
+    * 
+    * @return Current value of the framerate of the extractor
+    */
+    public Future<Integer> getFrameRate() throws DynamicCallException, ExecutionException {
+        return call("getFrameRate");
+    }
+
+    /**
+    * Changes the pause status of the extractor
+    * 
+    * @param paused  New pause satus
+    * @return The Future
+    */
+    public Future<Void> pause(Boolean paused) throws DynamicCallException, ExecutionException{
+        return call("pause", paused);
+    }
+
+    /**
+    * Sets the extractor framerate for all the subscribers
+    * 
+    * @param framerate  New framerate
+    * @return True if the update succeeded, False if not
+    */
+    public Future<Boolean> setFrameRate(Integer framerate) throws DynamicCallException, ExecutionException {
+        return call("setFrameRate", framerate);
+    }
+
+    /**
+    * Color parameter setting
+    * 
+    * @param r  The R component in RGB of the color to find
+    * @param g  The G component in RGB of the color to find
+    * @param b  The B component in RGB of the color to find
+    * @param colorThres  The color threshold
+    * @return The Future
+    */
+    public Future<Void> setColor(Integer r, Integer g, Integer b, Integer colorThres) throws DynamicCallException, ExecutionException{
+        return call("setColor", r, g, b, colorThres);
+    }
+
+    /**
+    * Object parameter setting
+    * 
+    * @param minSize  The minimum size of the cluster to find
+    * @param span  The span of the object in meters
+    * @return The Future
+    */
+    public Future<Void> setObjectProperties(Integer minSize, Float span) throws DynamicCallException, ExecutionException{
+        return call("setObjectProperties", minSize, span);
+    }
+
+    /**
+    * Sets extractor active camera
+    * 
+    * @param cameraId  Id of the camera that will become the active camera
+    * @return True if the update succeeded, False if not
+    */
+    public Future<Boolean> setActiveCamera(Integer cameraId) throws DynamicCallException, ExecutionException {
+        return call("setActiveCamera", cameraId);
+    }
+
+    /**
+    * Send back the x,y,radius of the circle if any
+    * 
+    * @return The circle as x,y,radius in image relative coordinates (x,radius divided by rows and y by cols)
+    */
+    public Future<Object> getCircle() throws DynamicCallException, ExecutionException {
+        return call("getCircle");
+    }
+
+    /**
+    * Get the camera auto exposure mode
+    * 
+    * @return A flag saying the exposure is auto or not
+    */
+    public Future<Boolean> getAutoExposure() throws DynamicCallException, ExecutionException {
+        return call("getAutoExposure");
+    }
+
+    /**
+    * Set the camera auto exposure to on
+    * 
+    * @param mode  Whether the exposure is auto or not
+    * @return The Future
+    */
+    public Future<Void> setAutoExposure(Boolean mode) throws DynamicCallException, ExecutionException{
+        return call("setAutoExposure", mode);
+    }
+
+    /**
+    * DEPRECATED: Sets pause and resolution
+    * 
+    * @param paramName  Name of the parameter to set
+    * @param value  New value
+    * @return The Future
+    */
+    public Future<Void> setParameter(String paramName, Object value) throws DynamicCallException, ExecutionException{
+        return call("setParameter", paramName, value);
+    }
+
+    /**
+    * Gets extractor resolution
+    * 
+    * @return Current value of the resolution of the extractor
+    */
+    public Future<Integer> getResolution() throws DynamicCallException, ExecutionException {
+        return call("getResolution");
+    }
+
+    /**
+    * Gets extractor active camera
+    * 
+    * @return Id of the current active camera of the extractor
+    */
+    public Future<Integer> getActiveCamera() throws DynamicCallException, ExecutionException {
+        return call("getActiveCamera");
+    }
+
+    /**
+    * Sets extractor resolution
+    * 
+    * @param resolution  New resolution
+    * @return True if the update succeeded, False if not
+    */
+    public Future<Boolean> setResolution(Integer resolution) throws DynamicCallException, ExecutionException {
+        return call("setResolution", resolution);
+    }
+
+    /**
+    * Gets extractor pause status
+    * 
+    * @return True if the extractor is paused, False if not
+    */
+    public Future<Boolean> isPaused() throws DynamicCallException, ExecutionException {
+        return call("isPaused");
+    }
+
+    /**
+    * Gets extractor running status
+    * 
+    * @return True if the extractor is currently processing images, False if not
+    */
+    public Future<Boolean> isProcessing() throws DynamicCallException, ExecutionException {
+        return call("isProcessing");
+    }
+
+    /**
+    * Object parameter setting
+    * 
+    * @param minSize  The minimum size of the cluster to find
+    * @param span  The span of the object in meters
+    * @param shape  The shape of the object
+    * @return The Future
+    */
+    public Future<Void> setObjectProperties(Integer minSize, Float span, String shape) throws DynamicCallException, ExecutionException{
+        return call("setObjectProperties", minSize, span, shape);
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Future<Boolean> isStatsEnabled() throws DynamicCallException, ExecutionException {
+        return call("isStatsEnabled");
+    }
+
+    /**
+    * 
+    * 
+    * @return The Future
+    */
+    public Future<Void> clearStats() throws DynamicCallException, ExecutionException{
+        return call("clearStats");
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Future<Boolean> isTraceEnabled() throws DynamicCallException, ExecutionException {
+        return call("isTraceEnabled");
+    }
+
+    /**
+    * Exits and unregisters the module.
+    * 
+    * @return The Future
+    */
+    public Future<Void> exit() throws DynamicCallException, ExecutionException{
+        return call("exit");
+    }
+
+    /**
+    * Returns the version of the module.
+    * 
+    * @return A string containing the version of the module.
+    */
+    public Future<String> version() throws DynamicCallException, ExecutionException {
+        return call("version");
+    }
+
+    /**
+    * Just a ping. Always returns true
+    * 
+    * @return returns true
+    */
+    public Future<Boolean> ping() throws DynamicCallException, ExecutionException {
+        return call("ping");
+    }
+
+    /**
+    * Retrieves the module's method list.
+    * 
+    * @return An array of method names.
+    */
+    public Future<List<String>> getMethodList() throws DynamicCallException, ExecutionException {
+        return call("getMethodList");
+    }
+
+    /**
+    * Retrieves a method's description.
+    * 
+    * @param methodName  The name of the method.
+    * @return A structure containing the method's description.
+    */
+    public Future<Object> getMethodHelp(String methodName) throws DynamicCallException, ExecutionException {
+        return call("getMethodHelp", methodName);
+    }
+
+    /**
+    * Retrieves the module's description.
+    * 
+    * @return A structure describing the module.
+    */
+    public Future<Object> getModuleHelp() throws DynamicCallException, ExecutionException {
+        return call("getModuleHelp");
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post'
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @param timeoutPeriod  The timeout period in ms. To wait indefinately, use a timeoutPeriod of zero.
+    * @return True if the timeout period terminated. False if the method returned.
+    */
+    public Future<Boolean> wait(Integer id, Integer timeoutPeriod) throws DynamicCallException, ExecutionException {
+        return call("wait", id, timeoutPeriod);
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post', returns a cancelable future
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @return The Future
+    */
+    public Future<Void> wait(Integer id) throws DynamicCallException, ExecutionException{
+        return call("wait", id);
+    }
+
+    /**
+    * Returns true if the method is currently running.
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @return True if the method is currently running
+    */
+    public Future<Boolean> isRunning(Integer id) throws DynamicCallException, ExecutionException {
+        return call("isRunning", id);
+    }
+
+    /**
+    * returns true if the method is currently running
+    * 
+    * @param id  the ID of the method to wait for
+    * @return The Future
+    */
+    public Future<Void> stop(Integer id) throws DynamicCallException, ExecutionException{
+        return call("stop", id);
+    }
+
+    /**
+    * Gets the name of the parent broker.
+    * 
+    * @return The name of the parent broker.
+    */
+    public Future<String> getBrokerName() throws DynamicCallException, ExecutionException {
+        return call("getBrokerName");
+    }
+
+    /**
+    * Gets the method usage string. This summarises how to use the method.
+    * 
+    * @param name  The name of the method.
+    * @return A string that summarises the usage of the method.
+    */
+    public Future<String> getUsage(String name) throws DynamicCallException, ExecutionException {
+        return call("getUsage", name);
+    }
+
+    /**
+    * Subscribes to the extractor. This causes the extractor to start writing information to memory using the keys described by getOutputNames(). These can be accessed in memory using ALMemory.getData("keyName"). In many cases you can avoid calling subscribe on the extractor by just calling ALMemory.subscribeToEvent() supplying a callback method. This will automatically subscribe to the extractor for you.
+    * 
+    * @param name  Name of the module which subscribes.
+    * @param period  Refresh period (in milliseconds) if relevant.
+    * @param precision  Precision of the extractor if relevant.
+    * @return The Future
+    */
+    public Future<Void> subscribe(String name, Integer period, Float precision) throws DynamicCallException, ExecutionException{
+        return call("subscribe", name, period, precision);
+    }
+
+    /**
+    * Subscribes to the extractor. This causes the extractor to start writing information to memory using the keys described by getOutputNames(). These can be accessed in memory using ALMemory.getData("keyName"). In many cases you can avoid calling subscribe on the extractor by just calling ALMemory.subscribeToEvent() supplying a callback method. This will automatically subscribe to the extractor for you.
+    * 
+    * @param name  Name of the module which subscribes.
+    * @return The Future
+    */
+    public Future<Void> subscribe(String name) throws DynamicCallException, ExecutionException{
+        return call("subscribe", name);
+    }
+
+    /**
+    * Unsubscribes from the extractor.
+    * 
+    * @param name  Name of the module which had subscribed.
+    * @return The Future
+    */
+    public Future<Void> unsubscribe(String name) throws DynamicCallException, ExecutionException{
+        return call("unsubscribe", name);
+    }
+
+    /**
+    * Updates the period if relevant.
+    * 
+    * @param name  Name of the module which has subscribed.
+    * @param period  Refresh period (in milliseconds).
+    * @return The Future
+    */
+    public Future<Void> updatePeriod(String name, Integer period) throws DynamicCallException, ExecutionException{
+        return call("updatePeriod", name, period);
+    }
+
+    /**
+    * Updates the precision if relevant.
+    * 
+    * @param name  Name of the module which has subscribed.
+    * @param precision  Precision of the extractor.
+    * @return The Future
+    */
+    public Future<Void> updatePrecision(String name, Float precision) throws DynamicCallException, ExecutionException{
+        return call("updatePrecision", name, precision);
+    }
+
+    /**
+    * Gets the current period.
+    * 
+    * @return Refresh period (in milliseconds).
+    */
+    public Future<Integer> getCurrentPeriod() throws DynamicCallException, ExecutionException {
+        return call("getCurrentPeriod");
+    }
+
+    /**
+    * Gets the current precision.
+    * 
+    * @return Precision of the extractor.
+    */
+    public Future<Float> getCurrentPrecision() throws DynamicCallException, ExecutionException {
+        return call("getCurrentPrecision");
+    }
+
+    /**
+    * Gets the period for a specific subscription.
+    * 
+    * @param name  Name of the module which has subscribed.
+    * @return Refresh period (in milliseconds).
+    */
+    public Future<Integer> getMyPeriod(String name) throws DynamicCallException, ExecutionException {
+        return call("getMyPeriod", name);
+    }
+
+    /**
+    * Gets the precision for a specific subscription.
+    * 
+    * @param name  name of the module which has subscribed
+    * @return precision of the extractor
+    */
+    public Future<Float> getMyPrecision(String name) throws DynamicCallException, ExecutionException {
+        return call("getMyPrecision", name);
+    }
+
+    /**
+    * Gets the parameters given by the module.
+    * 
+    * @return Array of names and parameters of all subscribers.
+    */
+    public Future<Object> getSubscribersInfo() throws DynamicCallException, ExecutionException {
+        return call("getSubscribersInfo");
+    }
+
+    /**
+    * Get the list of values updated in ALMemory.
+    * 
+    * @return Array of values updated by this extractor in ALMemory
+    */
+    public Future<List<String>> getOutputNames() throws DynamicCallException, ExecutionException {
+        return call("getOutputNames");
+    }
+
+    /**
+    * Get the list of events updated in ALMemory.
+    * 
+    * @return Array of events updated by this extractor in ALMemory
+    */
+    public Future<List<String>> getEventList() throws DynamicCallException, ExecutionException {
+        return call("getEventList");
+    }
+
+    /**
+    * Get the list of events updated in ALMemory.
+    * 
+    * @return Array of events updated by this extractor in ALMemory
+    */
+    public Future<List<String>> getMemoryKeyList() throws DynamicCallException, ExecutionException {
+        return call("getMemoryKeyList");
+    }
+
+    /**
+    * Sets the extractor framerate for a chosen subscriber
+    * 
+    * @param subscriberName  Name of the subcriber
+    * @param framerate  New framerate
+    * @return True if the update succeeded, False if not
+    */
+    public Future<Boolean> setFrameRate(String subscriberName, Integer framerate) throws DynamicCallException, ExecutionException {
+        return call("setFrameRate", subscriberName, framerate);
+    }
+
+    }
+}
+    

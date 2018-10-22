@@ -1,0 +1,822 @@
+/**
+ * Copyright (c) 2015 Aldebaran Robotics. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the COPYING file.
+ * Created by epinault and tcruz
+ */
+package com.aldebaran.qi.helper.proxies;
+
+import com.aldebaran.qi.*;
+import com.aldebaran.qi.helper.*;
+import java.util.List;
+import java.util.Map;
+
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+/**
+* This module embeds a speech synthetizer whose role is to convert text commands into sound waves that are then either sent to Nao's loudspeakers or written into a file. This service supports several languages and some parameters of the synthetizer can be tuned to change each language's synthetic voice.
+* @see <a href="http://doc.aldebaran.lan/doc/master/aldeb-doc/naoqi/audio/altexttospeech.html#altexttospeech">NAOqi APIs for ALTextToSpeech </a>
+* NAOqi V2.4.x
+*/
+public class ALTextToSpeech extends ALProxy {
+
+    private AsyncALTextToSpeech asyncProxy;
+
+    public ALTextToSpeech(Session session) throws Exception{
+        super(session);
+        asyncProxy = new AsyncALTextToSpeech();
+	    asyncProxy.setService(getService());
+    }
+
+    /**
+     * Get the async version of this proxy
+     *
+	 * @return a AsyncALTextToSpeech object
+	 */
+    public AsyncALTextToSpeech async() {
+        return asyncProxy;
+    }
+
+    /**
+    * Sets the volume of text-to-speech output.
+    * 
+    * @param volume  Volume (between 0.0 and 1.0).
+    */
+    public void setVolume(Float volume) throws DynamicCallException, ExecutionException {
+        call("setVolume", volume).get();
+    }
+
+    /**
+    * Get the locale associate to the current language.
+    * 
+    * @return A string with xx_XX format (region_country)
+    */
+    public String locale() throws DynamicCallException, ExecutionException {
+        return (String)call("locale").get();
+    }
+
+    /**
+    * Shows the Dictionary.
+    * 
+    */
+    public void showDictionary() throws DynamicCallException, ExecutionException{
+        call("showDictionary").get();
+    }
+
+    /**
+    * Reset ALTextToSpeech to his default state.
+    * 
+    */
+    public void reset() throws DynamicCallException, ExecutionException{
+        call("reset").get();
+    }
+
+    /**
+    * Loads a set of voice parameters defined in a xml file contained in the preferences folder.The name of the xml file must begin with ALTextToSpeech_Voice_ 
+    * 
+    * @param pPreferenceName  Name of the voice preference.
+    */
+    public void loadVoicePreference(String pPreferenceName) throws DynamicCallException, ExecutionException{
+        call("loadVoicePreference", pPreferenceName).get();
+    }
+
+    /**
+    * Unload the dictionary.
+    * 
+    * @param word  the word you wish to delete, does not have to be in japanese.
+    * @return bool: true if succeeded, false if failed
+    */
+    public Boolean deleteFromDictionary(String word) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("deleteFromDictionary", word).get();
+    }
+
+    /**
+    * Add a word to the library
+    * 
+    * @param type  the type of word you wish to insert, does not have to be in japanese.
+    * @param word  the word you wish to insert, does not have to be in japanese.
+    * @param priority  the priority of the word.
+    * @param phonetic  the phonetic pronouciation in KATAKANA.
+    * @param accent  syllabus and accentuation
+    * @return bool: true if succeeded, false if failed
+    */
+    public Boolean addToDictionary(String type, String word, String priority, String phonetic, String accent) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("addToDictionary", type, word, priority, phonetic, accent).get();
+    }
+
+    /**
+    * Add a word to the library
+    * 
+    * @param text  the text you wish to insert.
+    * @param toReplace  text to replace.
+    * @return bool: true if succeeded, false if failed
+    */
+    public Boolean addToDictionary(String text, String toReplace) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("addToDictionary", text, toReplace).get();
+    }
+
+    /**
+    * Sets a voice as the default voice for the corresponding language
+    * 
+    * @param Language  The language among those available on your robot as a String
+    * @param Voice  The voice among those available on your robot as a String
+    */
+    public void setLanguageDefaultVoice(String Language, String Voice) throws DynamicCallException, ExecutionException{
+        call("setLanguageDefaultVoice", Language, Voice).get();
+    }
+
+    /**
+    * Fetches the current volume the text to speech.
+    * 
+    * @return Volume (integer between 0 and 100).
+    */
+    public Float getVolume() throws DynamicCallException, ExecutionException {
+        return (Float)call("getVolume").get();
+    }
+
+    /**
+    * Unload the dictionary.
+    * 
+    * @param word  the word you wish to delete, does not have to be in japanese.
+    * @return bool: true if succeeded, false if failed
+    */
+    public Boolean deleteFromDictionary(String word, String param1) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("deleteFromDictionary", word, param1).get();
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Boolean isStatsEnabled() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isStatsEnabled").get();
+    }
+
+    /**
+    * 
+    * 
+    */
+    public void clearStats() throws DynamicCallException, ExecutionException{
+        call("clearStats").get();
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Boolean isTraceEnabled() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isTraceEnabled").get();
+    }
+
+    /**
+    * Exits and unregisters the module.
+    * 
+    */
+    public void exit() throws DynamicCallException, ExecutionException{
+        call("exit").get();
+    }
+
+    /**
+    * Returns the version of the module.
+    * 
+    * @return A string containing the version of the module.
+    */
+    public String version() throws DynamicCallException, ExecutionException {
+        return (String)call("version").get();
+    }
+
+    /**
+    * Just a ping. Always returns true
+    * 
+    * @return returns true
+    */
+    public Boolean ping() throws DynamicCallException, ExecutionException {
+        return (Boolean)call("ping").get();
+    }
+
+    /**
+    * Retrieves the module's method list.
+    * 
+    * @return An array of method names.
+    */
+    public List<String> getMethodList() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getMethodList").get();
+    }
+
+    /**
+    * Retrieves a method's description.
+    * 
+    * @param methodName  The name of the method.
+    * @return A structure containing the method's description.
+    */
+    public Object getMethodHelp(String methodName) throws DynamicCallException, ExecutionException {
+        return (Object)call("getMethodHelp", methodName).get();
+    }
+
+    /**
+    * Retrieves the module's description.
+    * 
+    * @return A structure describing the module.
+    */
+    public Object getModuleHelp() throws DynamicCallException, ExecutionException {
+        return (Object)call("getModuleHelp").get();
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post'
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @param timeoutPeriod  The timeout period in ms. To wait indefinately, use a timeoutPeriod of zero.
+    * @return True if the timeout period terminated. False if the method returned.
+    */
+    public Boolean wait(Integer id, Integer timeoutPeriod) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("wait", id, timeoutPeriod).get();
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post', returns a cancelable future
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    */
+    public void wait(Integer id) throws DynamicCallException, ExecutionException{
+        call("wait", id).get();
+    }
+
+    /**
+    * Returns true if the method is currently running.
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @return True if the method is currently running
+    */
+    public Boolean isRunning(Integer id) throws DynamicCallException, ExecutionException {
+        return (Boolean)call("isRunning", id).get();
+    }
+
+    /**
+    * returns true if the method is currently running
+    * 
+    * @param id  the ID of the method to wait for
+    */
+    public void stop(Integer id) throws DynamicCallException, ExecutionException{
+        call("stop", id).get();
+    }
+
+    /**
+    * Gets the name of the parent broker.
+    * 
+    * @return The name of the parent broker.
+    */
+    public String getBrokerName() throws DynamicCallException, ExecutionException {
+        return (String)call("getBrokerName").get();
+    }
+
+    /**
+    * Gets the method usage string. This summarises how to use the method.
+    * 
+    * @param name  The name of the method.
+    * @return A string that summarises the usage of the method.
+    */
+    public String getUsage(String name) throws DynamicCallException, ExecutionException {
+        return (String)call("getUsage", name).get();
+    }
+
+    /**
+    * Performs the text-to-speech operations : it takes a std::string as input and outputs a sound in both speakers. String encoding must be UTF8.
+    * 
+    * @param stringToSay  Text to say, encoded in UTF-8.
+    */
+    public void say(String stringToSay) throws DynamicCallException, ExecutionException{
+        call("say", stringToSay).get();
+    }
+
+    /**
+    * Performs the text-to-speech operations in a specific language: it takes a std::string as input and outputs a sound in both speakers. String encoding must be UTF8. Once the text is said, the language is set back to its initial value.
+    * 
+    * @param stringToSay  Text to say, encoded in UTF-8.
+    * @param language  Language used to say the text.
+    */
+    public void say(String stringToSay, String language) throws DynamicCallException, ExecutionException{
+        call("say", stringToSay, language).get();
+    }
+
+    /**
+    * Performs the text-to-speech operations: it takes a std::string as input and outputs the corresponding audio signal in the specified file.
+    * 
+    * @param pStringToSay  Text to say, encoded in UTF-8.
+    * @param pFileName  RAW file where to store the generated signal. The signal is encoded with a sample rate of 22050Hz, format S16_LE, 2 channels.
+    */
+    public void sayToFile(String pStringToSay, String pFileName) throws DynamicCallException, ExecutionException{
+        call("sayToFile", pStringToSay, pFileName).get();
+    }
+
+    /**
+    * This method stops the current and all the pending tasks immediately.
+    * 
+    */
+    public void stopAll() throws DynamicCallException, ExecutionException{
+        call("stopAll").get();
+    }
+
+    /**
+    * Changes the language used by the Text-to-Speech engine. It automatically changes the voice used since each of them is related to a unique language. If you want that change to take effect automatically after reboot of your robot, refer to the robot web page (setting page).
+    * 
+    * @param pLanguage  Language name. Must belong to the languages available in TTS (can be obtained with the getAvailableLanguages method).  It should be an identifier std::string.
+    */
+    public void setLanguage(String pLanguage) throws DynamicCallException, ExecutionException{
+        call("setLanguage", pLanguage).get();
+    }
+
+    /**
+    * Returns the language currently used by the text-to-speech engine.
+    * 
+    * @return Language of the current voice.
+    */
+    public String getLanguage() throws DynamicCallException, ExecutionException {
+        return (String)call("getLanguage").get();
+    }
+
+    /**
+    * Outputs the languages installed on the system.
+    * 
+    * @return Array of std::string that contains the languages installed on the system.
+    */
+    public List<String> getAvailableLanguages() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getAvailableLanguages").get();
+    }
+
+    /**
+    * Outputs all the languages supported (may be installed or not).
+    * 
+    * @return Array of std::string that contains all the supported languages (may be installed or not).
+    */
+    public List<String> getSupportedLanguages() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getSupportedLanguages").get();
+    }
+
+    /**
+    * Changes the parameters of the voice. For now, it is only possible to reset the voice speed.
+    * 
+    * @param pEffectName  Name of the parameter.
+    */
+    public void resetSpeed() throws DynamicCallException, ExecutionException{
+        call("resetSpeed").get();
+    }
+
+    /**
+    * Changes the parameters of the voice. The available parameters are: 
+ 	 pitchShift: applies a pitch shifting to the voice. The value indicates the ratio between the new fundamental frequencies and the old ones (examples: 2.0: an octave above, 1.5: a quint above). Correct range is (1.0 -- 4), or 0 to disable effect.
+ 	 doubleVoice: adds a second voice to the first one. The value indicates the ratio between the second voice fundamental frequency and the first one. Correct range is (1.0 -- 4), or 0 to disable effect 
+ 	 doubleVoiceLevel: the corresponding value is the level of the double voice (1.0: equal to the main voice one). Correct range is (0 -- 4). 
+ 	 doubleVoiceTimeShift: the corresponding value is the delay between the double voice and the main one. Correct range is (0 -- 0.5) 
+ If the effect value is not available, the effect parameter remains unchanged.
+    * 
+    * @param pEffectName  Name of the parameter.
+    * @param pEffectValue  Value of the parameter.
+    */
+    public void setParameter(String pEffectName, Float pEffectValue) throws DynamicCallException, ExecutionException{
+        call("setParameter", pEffectName, pEffectValue).get();
+    }
+
+    /**
+    * Returns the value of one of the voice parameters. The available parameters are: "pitchShift", "doubleVoice","doubleVoiceLevel" and "doubleVoiceTimeShift"
+    * 
+    * @param pParameterName  Name of the parameter.
+    * @return Value of the specified parameter
+    */
+    public Float getParameter(String pParameterName) throws DynamicCallException, ExecutionException {
+        return (Float)call("getParameter", pParameterName).get();
+    }
+
+    /**
+    * Changes the voice used by the text-to-speech engine. The voice identifier must belong to the installed voices, that can be listed using the 'getAvailableVoices' method. If the voice is not available, it remains unchanged. No exception is thrown in this case. For the time being, only two voices are available by default : Kenny22Enhanced (English voice) and Julie22Enhanced (French voice)
+    * 
+    * @param pVoiceID  The voice (as a std::string).
+    */
+    public void setVoice(String pVoiceID) throws DynamicCallException, ExecutionException{
+        call("setVoice", pVoiceID).get();
+    }
+
+    /**
+    * Returns the voice currently used by the text-to-speech engine.
+    * 
+    * @return Name of the current voice
+    */
+    public String getVoice() throws DynamicCallException, ExecutionException {
+        return (String)call("getVoice").get();
+    }
+
+    /**
+    * Outputs the available voices. The returned list contains the voice IDs.
+    * 
+    * @return  Array of std::string containing the voices installed on the system.
+    */
+    public List<String> getAvailableVoices() throws DynamicCallException, ExecutionException {
+        return (List<String>)call("getAvailableVoices").get();
+    }
+
+
+    public class AsyncALTextToSpeech extends ALProxy {
+
+        protected AsyncALTextToSpeech(){
+            super();
+        }
+    
+    /**
+    * Sets the volume of text-to-speech output.
+    * 
+    * @param volume  Volume (between 0.0 and 1.0).
+    * @return The Future
+    */
+    public Future<Void> setVolume(Float volume) throws DynamicCallException, ExecutionException{
+        return call("setVolume", volume);
+    }
+
+    /**
+    * Get the locale associate to the current language.
+    * 
+    * @return A string with xx_XX format (region_country)
+    */
+    public Future<String> locale() throws DynamicCallException, ExecutionException {
+        return call("locale");
+    }
+
+    /**
+    * Shows the Dictionary.
+    * 
+    * @return The Future
+    */
+    public Future<Void> showDictionary() throws DynamicCallException, ExecutionException{
+        return call("showDictionary");
+    }
+
+    /**
+    * Reset ALTextToSpeech to his default state.
+    * 
+    * @return The Future
+    */
+    public Future<Void> reset() throws DynamicCallException, ExecutionException{
+        return call("reset");
+    }
+
+    /**
+    * Loads a set of voice parameters defined in a xml file contained in the preferences folder.The name of the xml file must begin with ALTextToSpeech_Voice_ 
+    * 
+    * @param pPreferenceName  Name of the voice preference.
+    * @return The Future
+    */
+    public Future<Void> loadVoicePreference(String pPreferenceName) throws DynamicCallException, ExecutionException{
+        return call("loadVoicePreference", pPreferenceName);
+    }
+
+    /**
+    * Unload the dictionary.
+    * 
+    * @param word  the word you wish to delete, does not have to be in japanese.
+    * @return bool: true if succeeded, false if failed
+    */
+    public Future<Boolean> deleteFromDictionary(String word) throws DynamicCallException, ExecutionException {
+        return call("deleteFromDictionary", word);
+    }
+
+    /**
+    * Add a word to the library
+    * 
+    * @param type  the type of word you wish to insert, does not have to be in japanese.
+    * @param word  the word you wish to insert, does not have to be in japanese.
+    * @param priority  the priority of the word.
+    * @param phonetic  the phonetic pronouciation in KATAKANA.
+    * @param accent  syllabus and accentuation
+    * @return bool: true if succeeded, false if failed
+    */
+    public Future<Boolean> addToDictionary(String type, String word, String priority, String phonetic, String accent) throws DynamicCallException, ExecutionException {
+        return call("addToDictionary", type, word, priority, phonetic, accent);
+    }
+
+    /**
+    * Add a word to the library
+    * 
+    * @param text  the text you wish to insert.
+    * @param toReplace  text to replace.
+    * @return bool: true if succeeded, false if failed
+    */
+    public Future<Boolean> addToDictionary(String text, String toReplace) throws DynamicCallException, ExecutionException {
+        return call("addToDictionary", text, toReplace);
+    }
+
+    /**
+    * Sets a voice as the default voice for the corresponding language
+    * 
+    * @param Language  The language among those available on your robot as a String
+    * @param Voice  The voice among those available on your robot as a String
+    * @return The Future
+    */
+    public Future<Void> setLanguageDefaultVoice(String Language, String Voice) throws DynamicCallException, ExecutionException{
+        return call("setLanguageDefaultVoice", Language, Voice);
+    }
+
+    /**
+    * Fetches the current volume the text to speech.
+    * 
+    * @return Volume (integer between 0 and 100).
+    */
+    public Future<Float> getVolume() throws DynamicCallException, ExecutionException {
+        return call("getVolume");
+    }
+
+    /**
+    * Unload the dictionary.
+    * 
+    * @param word  the word you wish to delete, does not have to be in japanese.
+    * @return bool: true if succeeded, false if failed
+    */
+    public Future<Boolean> deleteFromDictionary(String word, String param1) throws DynamicCallException, ExecutionException {
+        return call("deleteFromDictionary", word, param1);
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Future<Boolean> isStatsEnabled() throws DynamicCallException, ExecutionException {
+        return call("isStatsEnabled");
+    }
+
+    /**
+    * 
+    * 
+    * @return The Future
+    */
+    public Future<Void> clearStats() throws DynamicCallException, ExecutionException{
+        return call("clearStats");
+    }
+
+    /**
+    * 
+    * 
+    */
+    public Future<Boolean> isTraceEnabled() throws DynamicCallException, ExecutionException {
+        return call("isTraceEnabled");
+    }
+
+    /**
+    * Exits and unregisters the module.
+    * 
+    * @return The Future
+    */
+    public Future<Void> exit() throws DynamicCallException, ExecutionException{
+        return call("exit");
+    }
+
+    /**
+    * Returns the version of the module.
+    * 
+    * @return A string containing the version of the module.
+    */
+    public Future<String> version() throws DynamicCallException, ExecutionException {
+        return call("version");
+    }
+
+    /**
+    * Just a ping. Always returns true
+    * 
+    * @return returns true
+    */
+    public Future<Boolean> ping() throws DynamicCallException, ExecutionException {
+        return call("ping");
+    }
+
+    /**
+    * Retrieves the module's method list.
+    * 
+    * @return An array of method names.
+    */
+    public Future<List<String>> getMethodList() throws DynamicCallException, ExecutionException {
+        return call("getMethodList");
+    }
+
+    /**
+    * Retrieves a method's description.
+    * 
+    * @param methodName  The name of the method.
+    * @return A structure containing the method's description.
+    */
+    public Future<Object> getMethodHelp(String methodName) throws DynamicCallException, ExecutionException {
+        return call("getMethodHelp", methodName);
+    }
+
+    /**
+    * Retrieves the module's description.
+    * 
+    * @return A structure describing the module.
+    */
+    public Future<Object> getModuleHelp() throws DynamicCallException, ExecutionException {
+        return call("getModuleHelp");
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post'
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @param timeoutPeriod  The timeout period in ms. To wait indefinately, use a timeoutPeriod of zero.
+    * @return True if the timeout period terminated. False if the method returned.
+    */
+    public Future<Boolean> wait(Integer id, Integer timeoutPeriod) throws DynamicCallException, ExecutionException {
+        return call("wait", id, timeoutPeriod);
+    }
+
+    /**
+    * Wait for the end of a long running method that was called using 'post', returns a cancelable future
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @return The Future
+    */
+    public Future<Void> wait(Integer id) throws DynamicCallException, ExecutionException{
+        return call("wait", id);
+    }
+
+    /**
+    * Returns true if the method is currently running.
+    * 
+    * @param id  The ID of the method that was returned when calling the method using 'post'
+    * @return True if the method is currently running
+    */
+    public Future<Boolean> isRunning(Integer id) throws DynamicCallException, ExecutionException {
+        return call("isRunning", id);
+    }
+
+    /**
+    * returns true if the method is currently running
+    * 
+    * @param id  the ID of the method to wait for
+    * @return The Future
+    */
+    public Future<Void> stop(Integer id) throws DynamicCallException, ExecutionException{
+        return call("stop", id);
+    }
+
+    /**
+    * Gets the name of the parent broker.
+    * 
+    * @return The name of the parent broker.
+    */
+    public Future<String> getBrokerName() throws DynamicCallException, ExecutionException {
+        return call("getBrokerName");
+    }
+
+    /**
+    * Gets the method usage string. This summarises how to use the method.
+    * 
+    * @param name  The name of the method.
+    * @return A string that summarises the usage of the method.
+    */
+    public Future<String> getUsage(String name) throws DynamicCallException, ExecutionException {
+        return call("getUsage", name);
+    }
+
+    /**
+    * Performs the text-to-speech operations : it takes a std::string as input and outputs a sound in both speakers. String encoding must be UTF8.
+    * 
+    * @param stringToSay  Text to say, encoded in UTF-8.
+    * @return The Future
+    */
+    public Future<Void> say(String stringToSay) throws DynamicCallException, ExecutionException{
+        return call("say", stringToSay);
+    }
+
+    /**
+    * Performs the text-to-speech operations in a specific language: it takes a std::string as input and outputs a sound in both speakers. String encoding must be UTF8. Once the text is said, the language is set back to its initial value.
+    * 
+    * @param stringToSay  Text to say, encoded in UTF-8.
+    * @param language  Language used to say the text.
+    * @return The Future
+    */
+    public Future<Void> say(String stringToSay, String language) throws DynamicCallException, ExecutionException{
+        return call("say", stringToSay, language);
+    }
+
+    /**
+    * Performs the text-to-speech operations: it takes a std::string as input and outputs the corresponding audio signal in the specified file.
+    * 
+    * @param pStringToSay  Text to say, encoded in UTF-8.
+    * @param pFileName  RAW file where to store the generated signal. The signal is encoded with a sample rate of 22050Hz, format S16_LE, 2 channels.
+    * @return The Future
+    */
+    public Future<Void> sayToFile(String pStringToSay, String pFileName) throws DynamicCallException, ExecutionException{
+        return call("sayToFile", pStringToSay, pFileName);
+    }
+
+    /**
+    * This method stops the current and all the pending tasks immediately.
+    * 
+    * @return The Future
+    */
+    public Future<Void> stopAll() throws DynamicCallException, ExecutionException{
+        return call("stopAll");
+    }
+
+    /**
+    * Changes the language used by the Text-to-Speech engine. It automatically changes the voice used since each of them is related to a unique language. If you want that change to take effect automatically after reboot of your robot, refer to the robot web page (setting page).
+    * 
+    * @param pLanguage  Language name. Must belong to the languages available in TTS (can be obtained with the getAvailableLanguages method).  It should be an identifier std::string.
+    * @return The Future
+    */
+    public Future<Void> setLanguage(String pLanguage) throws DynamicCallException, ExecutionException{
+        return call("setLanguage", pLanguage);
+    }
+
+    /**
+    * Returns the language currently used by the text-to-speech engine.
+    * 
+    * @return Language of the current voice.
+    */
+    public Future<String> getLanguage() throws DynamicCallException, ExecutionException {
+        return call("getLanguage");
+    }
+
+    /**
+    * Outputs the languages installed on the system.
+    * 
+    * @return Array of std::string that contains the languages installed on the system.
+    */
+    public Future<List<String>> getAvailableLanguages() throws DynamicCallException, ExecutionException {
+        return call("getAvailableLanguages");
+    }
+
+    /**
+    * Outputs all the languages supported (may be installed or not).
+    * 
+    * @return Array of std::string that contains all the supported languages (may be installed or not).
+    */
+    public Future<List<String>> getSupportedLanguages() throws DynamicCallException, ExecutionException {
+        return call("getSupportedLanguages");
+    }
+
+    /**
+    * Changes the parameters of the voice. For now, it is only possible to reset the voice speed.
+    * 
+    * @param pEffectName  Name of the parameter.
+    * @return The Future
+    */
+    public Future<Void> resetSpeed() throws DynamicCallException, ExecutionException{
+        return call("resetSpeed");
+    }
+
+    /**
+    * Changes the parameters of the voice. The available parameters are: 
+ 	 pitchShift: applies a pitch shifting to the voice. The value indicates the ratio between the new fundamental frequencies and the old ones (examples: 2.0: an octave above, 1.5: a quint above). Correct range is (1.0 -- 4), or 0 to disable effect.
+ 	 doubleVoice: adds a second voice to the first one. The value indicates the ratio between the second voice fundamental frequency and the first one. Correct range is (1.0 -- 4), or 0 to disable effect 
+ 	 doubleVoiceLevel: the corresponding value is the level of the double voice (1.0: equal to the main voice one). Correct range is (0 -- 4). 
+ 	 doubleVoiceTimeShift: the corresponding value is the delay between the double voice and the main one. Correct range is (0 -- 0.5) 
+ If the effect value is not available, the effect parameter remains unchanged.
+    * 
+    * @param pEffectName  Name of the parameter.
+    * @param pEffectValue  Value of the parameter.
+    * @return The Future
+    */
+    public Future<Void> setParameter(String pEffectName, Float pEffectValue) throws DynamicCallException, ExecutionException{
+        return call("setParameter", pEffectName, pEffectValue);
+    }
+
+    /**
+    * Returns the value of one of the voice parameters. The available parameters are: "pitchShift", "doubleVoice","doubleVoiceLevel" and "doubleVoiceTimeShift"
+    * 
+    * @param pParameterName  Name of the parameter.
+    * @return Value of the specified parameter
+    */
+    public Future<Float> getParameter(String pParameterName) throws DynamicCallException, ExecutionException {
+        return call("getParameter", pParameterName);
+    }
+
+    /**
+    * Changes the voice used by the text-to-speech engine. The voice identifier must belong to the installed voices, that can be listed using the 'getAvailableVoices' method. If the voice is not available, it remains unchanged. No exception is thrown in this case. For the time being, only two voices are available by default : Kenny22Enhanced (English voice) and Julie22Enhanced (French voice)
+    * 
+    * @param pVoiceID  The voice (as a std::string).
+    * @return The Future
+    */
+    public Future<Void> setVoice(String pVoiceID) throws DynamicCallException, ExecutionException{
+        return call("setVoice", pVoiceID);
+    }
+
+    /**
+    * Returns the voice currently used by the text-to-speech engine.
+    * 
+    * @return Name of the current voice
+    */
+    public Future<String> getVoice() throws DynamicCallException, ExecutionException {
+        return call("getVoice");
+    }
+
+    /**
+    * Outputs the available voices. The returned list contains the voice IDs.
+    * 
+    * @return  Array of std::string containing the voices installed on the system.
+    */
+    public Future<List<String>> getAvailableVoices() throws DynamicCallException, ExecutionException {
+        return call("getAvailableVoices");
+    }
+
+    }
+}
+    
