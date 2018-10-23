@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity
     private Session session = null;
     private ALMotion motion;
     private ALTextToSpeech speech;
+    private OrientationManager orientation;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -49,13 +50,14 @@ public class MainActivity extends AppCompatActivity
         try {
             speech = new ALTextToSpeech(session);
             motion = new ALMotion(session);
+            orientation = new OrientationManager(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         HeadAnglesTask headTask = null;
         try {
-            headTask = new HeadAnglesTask(motion);
+            headTask = new HeadAnglesTask(orientation, motion);
             headTask.execute();
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        Thread.sleep(5000);
+        Thread.sleep(50000);
 
         try {
             speech.say(editSentences.getText().toString());
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        Thread.sleep(5000);
+        Thread.sleep(50000);
 
         try {
             speech.say("Finish");

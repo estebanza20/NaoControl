@@ -1,6 +1,9 @@
 package com.example.ezamoraa.naocontrol;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
+
 import com.aldebaran.qi.helper.proxies.ALMotion;
 
 import java.util.ArrayList;
@@ -8,10 +11,12 @@ import java.util.List;
 
 public class HeadAnglesTask extends AsyncTask<Void, Void, Void> {
     private ALMotion motion;
+    private OrientationManager orientation;
     private static final int SLEEP_MS = 100;
 
-    public HeadAnglesTask(ALMotion motion){
+    public HeadAnglesTask(OrientationManager orientation, ALMotion motion){
         this.motion = motion;
+        this.orientation = orientation;
     }
 
     @Override
@@ -24,27 +29,12 @@ public class HeadAnglesTask extends AsyncTask<Void, Void, Void> {
         angles.add(0f);
         angles.add(0f);
 
-        int i = 0;
-        float step = 0.01f;
-
         while(!this.isCancelled()) {
             try {
-                if (step > 0) {
-                    if (angles.get(0) < 1.5f) {
-                        angles.set(0, angles.get(0)+step*i);
-                    } else {
-                        step *= -1;
-                        i = 0;
-                    }
-                } else {
-                    if (angles.get(0) > -1.5f) {
-                        angles.set(0, angles.get(0)+step*i);
-                    } else {
-                        step *= -1;
-                        i = 0;
-                    }
-                }
-                i++;
+                angles.set(0, orientation.filteredYaw);
+                angles.set(1, orientation.filteredPitch);
+                Log.v("HeadAngles", "pitch:" + Float.toString(orientation.filteredPitch));
+                Log.v("HeadAngles", "yaw:" + Float.toString(orientation.filteredYaw));
                 this.motion.setAngles(names, angles, 0.5f);
                 Thread.sleep(SLEEP_MS);
             } catch (Exception e) {
@@ -53,4 +43,7 @@ public class HeadAnglesTask extends AsyncTask<Void, Void, Void> {
         }
         return null;
     }
+
+
 }
+
