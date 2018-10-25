@@ -44,9 +44,8 @@ public class OrientationManager implements SensorEventListener {
     float filteredYaw = 0;
 
     float[] orientation = new float[3];
-    int contador = 0;
-    int banderaPosicionInicial = 0;
-    int numeroAngulosPromedio = 10;
+    int counter = 0;
+    int averageSamples = 10;
 
     float maxPitch = 29.5f*(180.0f/(float)Math.PI);
     float minPitch = -38.5f*(180.0f/(float)Math.PI);
@@ -70,19 +69,19 @@ public class OrientationManager implements SensorEventListener {
                 SensorManager.getOrientation(R, orientation);
 
                 if(mGravity[2]<0) orientation[1] = (float) (Math.PI - orientation[1]);
-                if (contador < numeroAngulosPromedio){
+                if (counter < averageSamples){
                     pitch += orientation[1];
                     yaw += orientation[2];
                 }
-                else if (contador == numeroAngulosPromedio ){
-                    filteredPitch = Math.max(Math.min(pitch/numeroAngulosPromedio, maxPitch), minPitch);
-                    filteredYaw = Math.max(Math.min(yaw/numeroAngulosPromedio, maxYaw), minYaw);
+                else if (counter == averageSamples ){
+                    filteredPitch = Math.max(Math.min(pitch/averageSamples, maxPitch), minPitch);
+                    filteredYaw = Math.max(Math.min(yaw/averageSamples, maxYaw), minYaw);
                     pitch = 0;
                     yaw = 0;
-                    contador = -1;
+                    counter = -1;
                 }
             }
-            contador++;
+            counter++;
         }
     }
 }
