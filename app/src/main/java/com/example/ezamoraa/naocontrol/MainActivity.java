@@ -70,11 +70,12 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
 
-            //Thread.sleep(50000);
             Thread.sleep(50);
 
             try {
                 speech.say(editSentences.getText().toString());
+                editSentences.setText("");
+                editSentences.setHint("Enter sentences here");
             } catch (Exception e) {
                 e.printStackTrace();
             }
