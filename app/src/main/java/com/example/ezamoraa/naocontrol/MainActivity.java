@@ -55,38 +55,40 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        HeadAnglesTask headTask = null;
-        try {
-            headTask = new HeadAnglesTask(orientation, motion);
-            headTask.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
+        while (true){
+            HeadAnglesTask headTask = null;
+            try {
+                headTask = new HeadAnglesTask(orientation, motion);
+                headTask.execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                speech.say("Start");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //Thread.sleep(50000);
+            Thread.sleep(50);
+
+            try {
+                speech.say(editSentences.getText().toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            Thread.sleep(50);
+
+            try {
+                speech.say("Finish");
+                headTask.cancel(false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Toast toast = Toast.makeText(context, "Done", Toast.LENGTH_SHORT);
+            toast.show();
         }
-
-        try {
-            speech.say("Start");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Thread.sleep(50000);
-
-        try {
-            speech.say(editSentences.getText().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Thread.sleep(50000);
-
-        try {
-            speech.say("Finish");
-            headTask.cancel(false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Toast toast = Toast.makeText(context, "Done", Toast.LENGTH_SHORT);
-        toast.show();
     }
 }

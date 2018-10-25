@@ -8,6 +8,7 @@ import com.aldebaran.qi.helper.proxies.ALMotion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
 public class HeadAnglesTask extends AsyncTask<Void, Void, Void> {
     private ALMotion motion;
@@ -29,12 +30,17 @@ public class HeadAnglesTask extends AsyncTask<Void, Void, Void> {
         angles.add(0f);
         angles.add(0f);
 
+        List<Float> array = new ArrayList <>();
+        array.add(1.0f);
+        array.add(1.0f);
+
         while(!this.isCancelled()) {
             try {
                 angles.set(0, orientation.filteredYaw);
                 angles.set(1, orientation.filteredPitch);
                 Log.v("HeadAngles", "pitch:" + Float.toString(orientation.filteredPitch));
                 Log.v("HeadAngles", "yaw:" + Float.toString(orientation.filteredYaw));
+                this.motion.setStiffnesses(names, array);
                 this.motion.setAngles(names, angles, 0.5f);
                 Thread.sleep(SLEEP_MS);
             } catch (Exception e) {
