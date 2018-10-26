@@ -1,20 +1,26 @@
 package com.example.ezamoraa.naocontrol;
 
-import com.aldebaran.qi.DynamicCallException;
+
 import com.aldebaran.qi.Session;
 import com.aldebaran.qi.helper.proxies.ALMotion;
 import com.aldebaran.qi.helper.proxies.ALRobotPosture;
 import com.aldebaran.qi.helper.proxies.ALTextToSpeech;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends FragmentActivity
 {
     private static String TAG = "NaoControl";
 
@@ -23,70 +29,174 @@ public class MainActivity extends AppCompatActivity
     private ALTextToSpeech speech;
     private OrientationManager orientation;
 
+
+    private LogInFragment logIn = new LogInFragment();
+    private ControlFragment control = new ControlFragment();
+    private VideoFragment video = new VideoFragment();
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
         setContentView(R.layout.main);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.allLayout, this.control)
+                    .commit();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.allLayout, this.logIn)
+                    .commit();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.allLayout, this.video)
+                    .commit();
+            getSupportFragmentManager().beginTransaction()
+                    .hide(this.control)
+                    .commit();
+            getSupportFragmentManager().beginTransaction()
+                    .hide(this.video)
+                    .commit();
+        }
     }
 
-    public void onConnectHandler(View view) throws InterruptedException {
-        EditText mEdit = findViewById(R.id.editIP);
-        EditText EditPort = findViewById(R.id.editPort);
-        EditText editSentences = findViewById(R.id.editText);
+    public void ConnectActivity(View view)
+    {
+        EditText editIp = findViewById(R.id.editTextIp);
+        EditText editPort = findViewById(R.id.editTextPort);
         Context context = getApplicationContext();
-        String url = "tcp://" + mEdit.getText().toString() + ":" + EditPort.getText().toString();
-
+        String url = "tcp://" + editIp.getText().toString() + ":" + editPort.getText().toString();
         session = new Session();
-        try {
-            session.connect(url).sync();
+        try
+        {
+            if (((Button) findViewById(R.id.buttonConnect)).getText() == getString(R.string.button_connect)) {
+                //session.connect(url).sync();
+                ((Button) findViewById(R.id.buttonConnect)).setText(getString(R.string.button_disconnect));
+                this.showControlWindow();
+            } else {
+
+            }
         } catch (Exception e) {
             Toast toast = Toast.makeText(context, "Connection Error : " + e.getMessage(), Toast.LENGTH_SHORT);
             toast.show();
             return;
         }
+    }
 
+    public void speakTask(View view)
+    {
+        EditText newMessage = findViewById(R.id.editTextSpeak);
         try {
             speech = new ALTextToSpeech(session);
-            motion = new ALMotion(session);
-            orientation = new OrientationManager(this);
+            speech.say(newMessage.getText().toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
-        HeadAnglesTask headTask = null;
-        try {
-            headTask = new HeadAnglesTask(orientation, motion);
-            headTask.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static class LogInFragment extends Fragment {
+
+        public LogInFragment() {
         }
 
-        try {
-            speech.say("Start");
-        } catch (Exception e) {
-            e.printStackTrace();
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.connectfragment, container, false);
+            return rootView;
+        }
+    }
+
+    public static class ControlFragment extends Fragment {
+
+        public ControlFragment() {
         }
 
-        Thread.sleep(50000);
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.controlfragment, container, false);
+            return rootView;
+        }
+    }
 
-        try {
-            speech.say(editSentences.getText().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static class VideoFragment extends Fragment {
+
+        public VideoFragment() {
         }
 
-        Thread.sleep(50000);
-
-        try {
-            speech.say("Finish");
-            headTask.cancel(false);
-        } catch (Exception e) {
-            e.printStackTrace();
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.videofragment, container, false);
+            return rootView;
         }
+    }
 
-        Toast toast = Toast.makeText(context, "Done", Toast.LENGTH_SHORT);
-        toast.show();
+    public void BackControlWindow(View view) {
+        if (((Button) findViewById(R.id.buttonConnect)).getText() == getString(R.string.button_disconnect)) {
+            this.showControlWindow();
+        }
+    }
+
+    public void showControlWindow(){
+        if (session != null) {
+            Log.i(TAG, "showing control fragment");
+            try {
+                getSupportFragmentManager().beginTransaction()
+                        .hide(this.logIn)
+                        .commit();
+                getSupportFragmentManager().beginTransaction()
+                        .hide(this.video)
+                        .commit();
+                getSupportFragmentManager().beginTransaction()
+                        .show(this.control)
+                        .commit();
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void showLogInWindow(View view)
+    {
+        if (session != null) {
+            Log.i(TAG, "showing video fragment");
+            try {
+                getSupportFragmentManager().beginTransaction()
+                        .hide(this.control)
+                        .commit();
+                getSupportFragmentManager().beginTransaction()
+                        .hide(this.video)
+                        .commit();
+                getSupportFragmentManager().beginTransaction()
+                        .show(this.logIn)
+                        .commit();
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void showVideoWindow(View view)
+    {
+        if (session != null) {
+            Log.i(TAG, "showing video fragment");
+            try {
+                getSupportFragmentManager().beginTransaction()
+                        .hide(this.control)
+                        .commit();
+                getSupportFragmentManager().beginTransaction()
+                        .hide(this.logIn)
+                        .commit();
+                getSupportFragmentManager().beginTransaction()
+                        .show(this.video)
+                        .commit();
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 }
