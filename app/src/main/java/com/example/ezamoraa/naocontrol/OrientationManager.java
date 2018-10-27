@@ -11,26 +11,32 @@ import android.os.HandlerThread;
 import static android.content.Context.SENSOR_SERVICE;
 
 public class OrientationManager implements SensorEventListener {
-    private SensorManager mSensorManager;
+    private SensorManager sensorManager;
     private Sensor accelerometer;
     private Sensor magnetometer;
 
     private HandlerThread sensorThread;
     private Handler sensorHandler;
 
-
     public OrientationManager(Context context) {
-        mSensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+    }
 
+    public void start() {
         sensorThread = new HandlerThread("Orientation thread", Thread.MAX_PRIORITY);
         sensorThread.start();
-
         sensorHandler = new Handler(sensorThread.getLooper());
 
-        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI, sensorHandler);
-        mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI, sensorHandler);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI, sensorHandler);
+        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI, sensorHandler);
+    }
+
+    public void stop() {
+       sensorManager.unregisterListener(this, accelerometer);
+       sensorManager.unregisterListener(this, magnetometer);
+       sensorThread.quit();
     }
 
     float[] mGravity;
@@ -45,7 +51,6 @@ public class OrientationManager implements SensorEventListener {
 
     float[] orientation = new float[3];
     int contador = 0;
-    int banderaPosicionInicial = 0;
     int numeroAngulosPromedio = 10;
 
     float maxPitch = 29.5f*(180.0f/(float)Math.PI);

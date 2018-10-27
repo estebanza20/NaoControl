@@ -5,4 +5,6 @@
     <string name="connect">Say!</string>
     <string name="defaultIP">192.168.100.44</string>
     <string name="defaultPort">9559</string>
+    <string name="headAnglesOn">HEAD ANGLES ON</string>
+    <string name="headAnglesOff">HEAD ANGLES OFF</string>
 </resources>
