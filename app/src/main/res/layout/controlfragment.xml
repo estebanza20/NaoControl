@@ -135,4 +135,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/sitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SIT"
+        app:layout_constraintBottom_toTopOf="@+id/button_control_back"
+        app:layout_constraintLeft_toLeftOf="@+id/button_control_back"/>
+
+    <Button
+        android:id="@+id/standUpButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="STAND UP"
+        app:layout_constraintBottom_toTopOf="@+id/button_video"
+        app:layout_constraintLeft_toLeftOf="@+id/button_video"
+        />
 </android.support.constraint.ConstraintLayout>

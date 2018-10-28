@@ -11,6 +11,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -89,6 +90,59 @@ public class MainActivity extends FragmentActivity
             speech = new ALTextToSpeech(session);
             speech.say(newMessage.getText().toString());
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void MovementActivity(View view)
+    {
+        Button rightButton = findViewById(R.id.button_right);
+        Button leftButton = findViewById(R.id.button_left);
+        Button upButton = findViewById(R.id.button_up);
+        Button downButton = findViewById(R.id.button_down);
+        try {
+            rightButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_UP){
+
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            leftButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_UP){
+
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            upButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_UP){
+
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            downButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_UP){
+
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+        } catch (Exception e){
             e.printStackTrace();
         }
     }
