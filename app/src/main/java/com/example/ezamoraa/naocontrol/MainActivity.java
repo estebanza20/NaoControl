@@ -3,13 +3,10 @@ package com.example.ezamoraa.naocontrol;
 
 import com.aldebaran.qi.Session;
 import com.aldebaran.qi.helper.proxies.ALMotion;
-import com.aldebaran.qi.helper.proxies.ALRobotPosture;
 import com.aldebaran.qi.helper.proxies.ALTextToSpeech;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,6 +37,7 @@ public class MainActivity extends FragmentActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        this.setListeners();
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
         setContentView(R.layout.main);
@@ -95,8 +93,8 @@ public class MainActivity extends FragmentActivity
             e.printStackTrace();
         }
     }
-
-    public void MovementActivity(View view)
+    
+    public void setListeners()
     {
         Button rightButton = findViewById(R.id.button_right);
         Button leftButton = findViewById(R.id.button_left);
@@ -114,7 +112,15 @@ public class MainActivity extends FragmentActivity
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
                         try {
-                            motion.moveToward(-1.0f,0.0f,0.0f);
+                            motion.moveToward(0.0f,-0.2f,0.0f);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        try {
+                            motion.moveToward(0.0f, 0.0f, 0.0f);
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         }
@@ -128,7 +134,15 @@ public class MainActivity extends FragmentActivity
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
                         try {
-                            motion.moveToward(1.0f,0.0f,0.0f);
+                            motion.moveToward(0.0f,0.2f,0.0f);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        try {
+                            motion.moveToward(0.0f, 0.0f, 0.0f);
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         }
@@ -142,7 +156,15 @@ public class MainActivity extends FragmentActivity
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
                         try {
-                            motion.moveToward(0.0f,1.0f,0.0f);
+                            motion.moveToward(0.2f,0.0f,0.0f);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        try {
+                            motion.moveToward(0.0f, 0.0f, 0.0f);
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         }
@@ -156,7 +178,15 @@ public class MainActivity extends FragmentActivity
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
                         try {
-                            motion.moveToward(0.0f,-1.0f,0.0f);
+                            motion.moveToward(-0.2f,0.0f,0.0f);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        try {
+                            motion.moveToward(0.0f, 0.0f, 0.0f);
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         }
