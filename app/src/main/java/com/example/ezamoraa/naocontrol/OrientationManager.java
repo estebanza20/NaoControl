@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -28,6 +29,7 @@ public class OrientationManager implements SensorEventListener {
     float[] orientation;
 
     float pitch = 0;
+    float initialPitch = 0;
     float pitchSample = 0;
     private Queue<Float> pitchFifo;
     private int pitchFifoSize = 0;
@@ -36,6 +38,8 @@ public class OrientationManager implements SensorEventListener {
     float yawSample = 0;
     private Queue<Float> yawFifo;
     private int yawFifoSize = 0;
+
+    boolean start;
 
     private static final int FILTER_LEN = 35;
     private static final float MAX_PITCH = 29.5f*(180.0f/(float)Math.PI);
@@ -65,6 +69,7 @@ public class OrientationManager implements SensorEventListener {
         pitch = 0;
         yaw = 0;
 
+        start = true;
         running = true;
     }
 
@@ -95,24 +100,33 @@ public class OrientationManager implements SensorEventListener {
             if (success){
                 SensorManager.getOrientation(R, orientation);
 
-                if(gravity[2]<0) orientation[1] = (float) (Math.PI - orientation[1]);
+                if (gravity[2]<0) {
+                    orientation[1] = (float) (Math.PI - orientation[1]);
+                }
 
                 pitchSample = Math.max(Math.min(orientation[1], MAX_PITCH), MIN_PITCH);
                 yawSample = Math.max(Math.min(orientation[2], MAX_YAW), MIN_YAW);
 
+                if (start) {
+                    initialPitch = pitchSample;
+                    start = false;
+                }
+
+                pitchSample -= initialPitch;
+
                 pitchFifo.add(pitchSample);
                 pitchFifoSize = pitchFifo.size();
-                pitch += pitchSample/pitchFifoSize;
+                pitch += pitchSample/FILTER_LEN;
 
                 yawFifo.add(yawSample);
                 yawFifoSize = yawFifo.size();
-                yaw += yawSample/yawFifoSize;
+                yaw += yawSample/FILTER_LEN;
 
                 if (pitchFifoSize >= FILTER_LEN)
-                    pitch -= pitchFifo.remove()/pitchFifoSize;
+                    pitch -= pitchFifo.remove()/FILTER_LEN;
 
                 if (yawFifoSize >= FILTER_LEN)
-                    yaw -= yawFifo.remove()/yawFifoSize;
+                    yaw -= yawFifo.remove()/FILTER_LEN;
 
             }
         }

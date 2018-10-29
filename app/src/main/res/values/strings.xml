@@ -2,7 +2,7 @@
 <resources>
     <string name="hello">NaoControl</string>
     <string name="app_name">NaoControl</string>
-    <string name="button_ip">192.168.100.44</string>
+    <string name="button_ip">10.0.1.139</string>
     <string name="button_port">9559</string>
     <string name="button_connect">Connect</string>
     <string name="connecting_message">Please wait. Trying to connect</string>
