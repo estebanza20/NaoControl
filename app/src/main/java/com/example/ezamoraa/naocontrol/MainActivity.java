@@ -21,6 +21,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 
+import java.util.concurrent.ExecutionException;
+
 public class MainActivity extends FragmentActivity
 {
     private static String TAG = "NaoControl";
@@ -100,12 +102,22 @@ public class MainActivity extends FragmentActivity
         Button leftButton = findViewById(R.id.button_left);
         Button upButton = findViewById(R.id.button_up);
         Button downButton = findViewById(R.id.button_down);
+        Button sitButton = findViewById(R.id.sitButton);
+        Button standUpButton = findViewById(R.id.standUpButton);
+
         try {
+
+            motion = new ALMotion(session);
+            motion.wakeUp(); //robot will wake up and go to initial position
             rightButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-
+                        try {
+                            motion.moveToward(-1.0f,0.0f,0.0f);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
                         return true;
                     }
                     return false;
@@ -115,7 +127,11 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-
+                        try {
+                            motion.moveToward(1.0f,0.0f,0.0f);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
                         return true;
                     }
                     return false;
@@ -125,7 +141,11 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-
+                        try {
+                            motion.moveToward(0.0f,1.0f,0.0f);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
                         return true;
                     }
                     return false;
@@ -135,10 +155,35 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-
+                        try {
+                            motion.moveToward(0.0f,-1.0f,0.0f);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
                         return true;
                     }
                     return false;
+                }
+            });
+            standUpButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        motion.wakeUp(); //robot will wake up and go to initial position
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            sitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        motion.rest();//The robot will rest and go to a relax and safe position
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
