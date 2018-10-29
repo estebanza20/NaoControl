@@ -1,11 +1,13 @@
 package com.example.ezamoraa.naocontrol;
 
 
+import com.aldebaran.qi.DynamicCallException;
 import com.aldebaran.qi.Session;
 import com.aldebaran.qi.helper.proxies.ALMotion;
 import com.aldebaran.qi.helper.proxies.ALTextToSpeech;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -93,7 +95,28 @@ public class MainActivity extends FragmentActivity
             e.printStackTrace();
         }
     }
-    
+
+    public class WalkTask extends AsyncTask<Float, Void, Boolean > {
+        ALMotion motion;
+
+        public WalkTask(ALMotion motion){
+            this.motion = motion;
+        }
+
+        @Override
+        protected Boolean doInBackground(Float... params) {
+            float Xmovement = params[0];
+            float Ymovement = params[1];
+            try {
+                this.motion.moveToward(Xmovement, Ymovement, 0f);
+                return true;
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
+
     public void setListeners()
     {
         Button rightButton = findViewById(R.id.button_right);
@@ -111,19 +134,11 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        try {
-                            motion.moveToward(0.0f,-0.2f,0.0f);
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
+                        new WalkTask(motion).execute(0.0f,-0.2f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        try {
-                            motion.moveToward(0.0f, 0.0f, 0.0f);
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
+                        new WalkTask(motion).execute(0.0f,0.0f);
                         return true;
                     }
                     return false;
@@ -133,19 +148,11 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        try {
-                            motion.moveToward(0.0f,0.2f,0.0f);
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
+                        new WalkTask(motion).execute(0.0f,0.2f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        try {
-                            motion.moveToward(0.0f, 0.0f, 0.0f);
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
+                        new WalkTask(motion).execute(0.0f,0.0f);
                         return true;
                     }
                     return false;
@@ -155,19 +162,11 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        try {
-                            motion.moveToward(0.2f,0.0f,0.0f);
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
+                        new WalkTask(motion).execute(0.2f, 0.0f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        try {
-                            motion.moveToward(0.0f, 0.0f, 0.0f);
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
+                        new WalkTask(motion).execute(0.0f, 0.0f);
                         return true;
                     }
                     return false;
@@ -177,19 +176,11 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        try {
-                            motion.moveToward(-0.2f,0.0f,0.0f);
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
+                        new WalkTask(motion).execute(-0.2f, 0.0f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        try {
-                            motion.moveToward(0.0f, 0.0f, 0.0f);
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
+                        new WalkTask(motion).execute(0.0f, 0.0f);
                         return true;
                     }
                     return false;
