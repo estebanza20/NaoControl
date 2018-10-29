@@ -15,9 +15,13 @@
     <string name="button_left">Left</string>
     <string name="button_up">Up</string>
     <string name="button_down">Down</string>
+    <string name="button_stand_up">Stand Up</string>
+    <string name="button_sit_down">Sit Down</string>
     <string name="button_head">Head</string>
     <string name="speak_message">New message</string>
     <string name="button_back">Back</string>
+    <string name="disconnect">Disconnected from Nao</string>
+    <string name="button_control">Control</string>
     <string name="head_control_on">Head control (ON)</string>
     <string name="head_control_off">Head control (OFF)</string>
 </resources>

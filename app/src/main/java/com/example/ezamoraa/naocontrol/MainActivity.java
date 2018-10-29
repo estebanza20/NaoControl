@@ -23,7 +23,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class MainActivity extends FragmentActivity
@@ -59,6 +58,8 @@ public class MainActivity extends FragmentActivity
         if (savedInstanceState == null) {
             orientation = new OrientationManager(this);
             sessionLock = new ReentrantLock();
+            headAnglesActive = false;
+            videoStreamActive = false;
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.allLayout, this.control)
@@ -75,7 +76,6 @@ public class MainActivity extends FragmentActivity
             getSupportFragmentManager().beginTransaction()
                     .hide(this.video)
                     .commit();
-            configureMoveButtons();
         }
     }
 
@@ -83,144 +83,6 @@ public class MainActivity extends FragmentActivity
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
-
-    public void Connect(View view)
-    {
-        EditText editIp = findViewById(R.id.editTextIp);
-        EditText editPort = findViewById(R.id.editTextPort);
-        Context context = getApplicationContext();
-        String url = "tcp://" + editIp.getText().toString() + ":" + editPort.getText().toString();
-        session = new Session();
-        try
-        {
-            if (((Button) findViewById(R.id.buttonConnect)).getText() == getString(R.string.button_connect)) {
-                session.connect(url).sync();
-
-                speechProxy = new ALTextToSpeech(session);
-                motionProxy = new ALMotion(session);
-                videoProxy = new ALVideoDevice(session);
-
-                ((Button) findViewById(R.id.buttonConnect)).setText(getString(R.string.button_disconnect));
-                this.showControlWindow();
-            } else {
-
-            }
-        } catch (Exception e) {
-            Toast toast = Toast.makeText(context, "Connection Error : " + e.getMessage(), Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        }
-    }
-
-    public void speakTask(View view)
-    {
-        EditText newMessage = findViewById(R.id.editTextSpeak);
-        try {
-            speechProxy.say(newMessage.getText().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void configureMoveButtons()
-    {
-        Button rightButton = findViewById(R.id.button_right);
-        Button leftButton = findViewById(R.id.button_left);
-        Button upButton = findViewById(R.id.button_up);
-        Button downButton = findViewById(R.id.button_down);
-        Button sitButton = findViewById(R.id.sitButton);
-        Button standUpButton = findViewById(R.id.standUpButton);
-
-        try {
-            motionProxy.wakeUp();
-
-            rightButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_UP){
-                        new WalkTask(motionProxy).execute(0.0f,-0.2f);
-                        return true;
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        new WalkTask(motionProxy).execute(0.0f,0.0f);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-
-            leftButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_UP){
-                        new WalkTask(motionProxy).execute(0.0f,0.2f);
-                        return true;
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        new WalkTask(motionProxy).execute(0.0f,0.0f);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-
-            upButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_UP){
-                        new WalkTask(motionProxy).execute(0.2f, 0.0f);
-                        return true;
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        new WalkTask(motionProxy).execute(0.0f, 0.0f);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-
-            downButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_UP){
-                        new WalkTask(motionProxy).execute(-0.2f, 0.0f);
-                        return true;
-                    }
-                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        new WalkTask(motionProxy).execute(0.0f, 0.0f);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-
-            standUpButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        motionProxy.wakeUp();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            sitButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        motionProxy.rest();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
     public static class LogInFragment extends Fragment {
 
         public LogInFragment() {
@@ -260,19 +122,6 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    public void BackControlWindow(View view) {
-        Log.v("Main", "Call back control window");
-        if (((Button) findViewById(R.id.buttonConnect)).getText() == getString(R.string.button_disconnect)) {
-            if (videoStreamActive) {
-                videoTask.cancel(false);
-                videoImg.setImageBitmap(null);
-                videoStreamActive = false;
-            }
-
-            this.showControlWindow();
-        }
-    }
-
     public void showControlWindow(){
         if (session != null) {
             Log.i(TAG, "showing control fragment");
@@ -286,6 +135,14 @@ public class MainActivity extends FragmentActivity
                 getSupportFragmentManager().beginTransaction()
                         .show(this.control)
                         .commit();
+
+                setupWalkButtonsOnTouch();
+
+                if (videoStreamActive) {
+                    videoTask.cancel(false);
+                    videoImg.setImageBitmap(null);
+                    videoStreamActive = false;
+                }
             }
             catch(Exception e){
                 e.printStackTrace();
@@ -293,10 +150,10 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    public void showLogInWindow(View view)
+    public void showLogInWindow()
     {
         if (session != null) {
-            Log.i(TAG, "showing video fragment");
+            Log.i(TAG, "showing LogIn fragment");
             try {
                 getSupportFragmentManager().beginTransaction()
                         .hide(this.control)
@@ -307,6 +164,12 @@ public class MainActivity extends FragmentActivity
                 getSupportFragmentManager().beginTransaction()
                         .show(this.logIn)
                         .commit();
+                if (((Button) findViewById(R.id.buttonConnect)).getText()
+                        == getString(R.string.button_connect)) {
+                    findViewById(R.id.back_control).setVisibility(View.INVISIBLE);
+                } else {
+                    findViewById(R.id.back_control).setVisibility(View.VISIBLE);
+                }
             }
             catch(Exception e){
                 e.printStackTrace();
@@ -314,7 +177,7 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    public void showVideoWindow(View view)
+    public void showVideoWindow()
     {
         if (session != null) {
             Log.i(TAG, "showing video fragment");
@@ -340,30 +203,193 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    public void onHeadAnglesButtonClick(View view) {
+    public void setupWalkButtonsOnTouch()
+    {
+        Button rightButton = findViewById(R.id.button_right);
+        Button leftButton = findViewById(R.id.button_left);
+        Button upButton = findViewById(R.id.button_up);
+        Button downButton = findViewById(R.id.button_down);
+
+        try {
+            rightButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        Log.v("Main", "Called right button onTouch DOWN");
+                        v.setAlpha(0.5f);
+                        new WalkTask(motionProxy).execute(0.0f,-0.2f);
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP){
+                        Log.v("Main", "Called right button onTouch UP");
+                        v.setAlpha(1f);
+                        new WalkTask(motionProxy).execute(0.0f,0.0f);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            leftButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        Log.v("Main", "Called left button onTouch DOWN");
+                        new WalkTask(motionProxy).execute(0.0f,0.2f);
+                        v.setAlpha(0.5f);
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP){
+                        Log.v("Main", "Called left button onTouch UP");
+                        new WalkTask(motionProxy).execute(0.0f,0.0f);
+                        v.setAlpha(1f);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            upButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        Log.v("Main", "Called up button onTouch DOWN");
+                        new WalkTask(motionProxy).execute(0.2f, 0.0f);
+                        v.setAlpha(0.5f);
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP){
+                        Log.v("Main", "Called up button onTouch UP");
+                        new WalkTask(motionProxy).execute(0.0f, 0.0f);
+                        v.setAlpha(1f);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            downButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        Log.v("Main", "Called down button onTouch DOWN");
+                        new WalkTask(motionProxy).execute(-0.2f, 0.0f);
+                        v.setAlpha(0.5f);
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_UP){
+                        Log.v("Main", "Called down button onTouch UP");
+                        new WalkTask(motionProxy).execute(0.0f, 0.0f);
+                        v.setAlpha(1f);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void onDisconnected(String message){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (videoStreamActive) {
+                    videoStreamActive = false;
+                    if (videoTask != null && !videoTask.isCancelled())
+                        videoTask.cancel(true);
+                }
+                if (headTask != null && !headTask.isCancelled()) {
+                    headTask.cancel(true);
+                    headAnglesActive = false;
+                    setHeadButtonStyle(false);
+                }
+
+                if (orientation != null && orientation.isRunning())
+                    orientation.stop();
+
+                ((Button) findViewById(R.id.buttonConnect)).setText(getString(R.string.button_connect));
+                showLogInWindow();
+                Toast.makeText(getApplicationContext(), getString(R.string.disconnect), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void onConnectButtonClick(View view)
+    {
+        EditText editIp = findViewById(R.id.editTextIp);
+        EditText editPort = findViewById(R.id.editTextPort);
+        Context context = getApplicationContext();
+        String url = "tcp://" + editIp.getText().toString() + ":" + editPort.getText().toString();
+        try {
+            if (((Button) findViewById(R.id.buttonConnect)).getText() == getString(R.string.button_connect)) {
+                session = new Session();
+                session.connect(url).sync();
+                session.onDisconnected("onDisconnected", this);
+
+                speechProxy = new ALTextToSpeech(session);
+                motionProxy = new ALMotion(session);
+                videoProxy = new ALVideoDevice(session);
+
+                ((Button) findViewById(R.id.buttonConnect)).setText(getString(R.string.button_disconnect));
+                showControlWindow();
+            } else {
+                if (session != null && session.isConnected())
+                    session.close();
+            }
+        } catch (Exception e) {
+            Toast toast = Toast.makeText(context, "Connection Error : " + e.getMessage(), Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    public void onControlBackButtonClick(View view) {
+        showLogInWindow();
+    }
+
+    public void onConnectControlButtonClick(View view) {
+        showControlWindow();
+    }
+
+    public void onVideoBackButtonClick(View view) {
+        showControlWindow();
+    }
+
+    public void onControlVideoButtonClick(View view) {
+        showVideoWindow();
+    }
+
+    public void onStandUpButtonClick(View view) {
+        try {
+            new MoveActionTask(motionProxy).execute("standUp");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onSitDownButtonClick(View view) {
+        try {
+            new MoveActionTask(motionProxy).execute("sitDown");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setHeadButtonStyle(Boolean setOn) {
         Button button1 = findViewById(R.id.button_control_head);
         Button button2 = findViewById(R.id.button_video_head);
         String text;
         Integer bgColor, textColor;
-        if (!headAnglesActive) {
-            orientation.start();
-            try {
-                headTask = new HeadAnglesTask(orientation, motionProxy, sessionLock);
-                headTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
+        if (setOn) {
             text = getResources().getString(R.string.head_control_on);
             bgColor = getResources().getColor(R.color.md_green_700);
             textColor = getResources().getColor(R.color.md_text_white);
-            headAnglesActive = true;
         } else {
-            headTask.cancel(false);
-            orientation.stop();
             text = getResources().getString(R.string.head_control_off);
-            bgColor = getResources().getColor(R.color.md_red_700);
+            bgColor = getResources().getColor(R.color.md_red_300);
             textColor = getResources().getColor(R.color.md_text_white);
-            headAnglesActive = false;
         }
 
         button1.setText(text);
@@ -374,4 +400,36 @@ public class MainActivity extends FragmentActivity
         button2.setTextColor(textColor);
         button2.setBackgroundColor(bgColor);
     }
+
+    public void onHeadAnglesButtonClick(View view) {
+        if (!headAnglesActive) {
+            orientation.start();
+            try {
+                headTask = new HeadAnglesTask(orientation, motionProxy, sessionLock);
+                headTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            headAnglesActive = true;
+        } else {
+            headTask.cancel(false);
+            orientation.stop();
+            headAnglesActive = false;
+        }
+
+        setHeadButtonStyle(headAnglesActive);
+    }
+
+    public void onSpeakButtonClick(View view)
+    {
+        EditText newMessage = findViewById(R.id.editTextSpeak);
+        String message = newMessage.getText().toString();
+        try {
+            new SpeakTask(speechProxy).execute(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
+
+

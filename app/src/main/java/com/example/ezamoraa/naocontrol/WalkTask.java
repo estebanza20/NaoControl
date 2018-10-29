@@ -9,8 +9,8 @@ import java.util.concurrent.ExecutionException;
 public class WalkTask extends AsyncTask<Float, Void, Boolean > {
     ALMotion motion;
 
-    public WalkTask(ALMotion motion){
-        this.motion = motion;
+    public WalkTask(ALMotion motionProxy){
+        motion = motionProxy;
     }
 
     @Override
@@ -18,7 +18,7 @@ public class WalkTask extends AsyncTask<Float, Void, Boolean > {
         float Xmovement = params[0];
         float Ymovement = params[1];
         try {
-            this.motion.moveToward(Xmovement, Ymovement, 0f);
+            motion.moveToward(Xmovement, Ymovement, 0f);
             return true;
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -26,3 +26,4 @@ public class WalkTask extends AsyncTask<Float, Void, Boolean > {
         return false;
     }
 }
+

@@ -16,7 +16,9 @@ public class HeadAnglesTask extends AsyncTask<Void, Void, Void> {
     private static final int SLEEP_MS = 50;
     private ReentrantLock sLock;
 
-    public HeadAnglesTask(OrientationManager orientationManager, ALMotion motionProxy, ReentrantLock sessionLock){
+    public HeadAnglesTask(OrientationManager orientationManager,
+                          ALMotion motionProxy,
+                          ReentrantLock sessionLock){
         motion = motionProxy;
         orientation = orientationManager;
         sLock = sessionLock;
@@ -31,6 +33,19 @@ public class HeadAnglesTask extends AsyncTask<Void, Void, Void> {
         List<Float> angles = new ArrayList<>();
         angles.add(0f);
         angles.add(0f);
+
+        List<Float> stiffness = new ArrayList<>();
+        stiffness.add(1f);
+        stiffness.add(1f);
+
+        sLock.lock();
+        try {
+            motion.setStiffnesses(names, stiffness);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            sLock.unlock();
+        }
 
         while(!this.isCancelled()) {
             try {

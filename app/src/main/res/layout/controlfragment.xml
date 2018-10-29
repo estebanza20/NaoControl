@@ -15,7 +15,6 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/speak_message"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,8 +26,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:background="@color/md_cyan_700"
-        android:onClick="speakTask"
+        android:background="@drawable/button_cyan"
+        android:onClick="onSpeakButtonClick"
         android:text="@string/button_speak"
         android:textColor="@color/md_text_white"
         app:layout_constraintBaseline_toBaselineOf="@+id/editTextSpeak"
@@ -65,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/md_grey_600"
+                android:background="@drawable/button_grey"
                 android:text="@string/button_up"
                 android:textColor="@color/md_text_white"></Button>
 
@@ -88,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/md_grey_600"
+                android:background="@drawable/button_grey"
                 android:text="@string/button_left"
                 android:textColor="@color/md_text_white"></Button>
 
@@ -105,7 +104,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/md_grey_600"
+                android:background="@drawable/button_grey"
                 android:text="@string/button_right"
                 android:textColor="@color/md_text_white"></Button>
         </TableRow>
@@ -128,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/md_grey_600"
+                android:background="@drawable/button_grey"
                 android:text="@string/button_down"
                 android:textColor="@color/md_text_white"
                 android:visibility="visible"></Button>
@@ -165,14 +164,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="SIT" />
+                android:onClick="onSitDownButtonClick"
+                android:text="@string/button_sit_down" />
 
             <Button
                 android:id="@+id/standUpButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="STAND UP" />
+                android:onClick="onStandUpButtonClick"
+                android:text="@string/button_stand_up" />
         </TableRow>
     </TableLayout>
 
@@ -180,6 +181,11 @@
         android:id="@+id/tableLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -192,18 +198,23 @@
 
             <Button
                 android:id="@+id/button_control_back"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
                 android:layout_weight="1"
-                android:onClick="showLogInWindow"
-                android:text="@string/button_back"></Button>
+                android:background="@drawable/button_grey"
+                android:onClick="onControlBackButtonClick"
+                android:text="@string/button_back"
+                android:textColor="@color/md_text_white"></Button>
 
             <Button
                 android:id="@+id/button_control_head"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
                 android:layout_weight="1"
-                android:background="@color/md_red_700"
+                android:background="@color/md_red_300"
                 android:onClick="onHeadAnglesButtonClick"
                 android:text="@string/head_control_off"
                 android:textColor="@color/md_text_white"></Button>
@@ -213,8 +224,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="showVideoWindow"
-                android:text="@string/button_video"></Button>
+                android:background="@drawable/button_blue"
+                android:onClick="onControlVideoButtonClick"
+                android:text="@string/button_video"
+                android:textColor="@color/md_text_white"></Button>
 
         </TableRow>
     </TableLayout>

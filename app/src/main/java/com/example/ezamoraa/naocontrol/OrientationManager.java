@@ -18,6 +18,21 @@ public class OrientationManager implements SensorEventListener {
     private HandlerThread sensorThread;
     private Handler sensorHandler;
 
+    private boolean running;
+
+    float[] gravity;
+    float[] geomagnetic;
+    float pitch = 0;
+    float yaw = 0;
+
+    float[] orientation = new float[3];
+
+    private static final float MAX_PITCH = 29.5f*(180.0f/(float)Math.PI);
+    private static final float MIN_PITCH = -38.5f*(180.0f/(float)Math.PI);
+    private static final float MAX_YAW = 119.5f*(180.0f/(float)Math.PI);
+    private static final float MIN_YAW = -119.5f*(180.0f/(float)Math.PI);
+
+
     public OrientationManager(Context context) {
         sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -31,26 +46,19 @@ public class OrientationManager implements SensorEventListener {
 
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI, sensorHandler);
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI, sensorHandler);
+        running = true;
     }
 
     public void stop() {
        sensorManager.unregisterListener(this, accelerometer);
        sensorManager.unregisterListener(this, magnetometer);
-       sensorThread.quit();
+       if (sensorThread != null && sensorThread.isAlive()) {
+           sensorThread.quit();
+           running = false;
+       }
     }
 
-    float[] gravity;
-    float[] geomagnetic;
-
-    float pitch = 0;
-    float yaw = 0;
-
-    float[] orientation = new float[3];
-
-    private static final float MAX_PITCH = 29.5f*(180.0f/(float)Math.PI);
-    private static final float MIN_PITCH = -38.5f*(180.0f/(float)Math.PI);
-    private static final float MAX_YAW = 119.5f*(180.0f/(float)Math.PI);
-    private static final float MIN_YAW = -119.5f*(180.0f/(float)Math.PI);
+    public boolean isRunning() { return running; }
 
     public void onAccuracyChanged(Sensor sensor, int accuracy){}
 
