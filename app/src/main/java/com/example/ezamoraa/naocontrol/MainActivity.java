@@ -219,13 +219,13 @@ public class MainActivity extends FragmentActivity
                     if (event.getAction() == MotionEvent.ACTION_DOWN){
                         Log.v("Main", "Called right button onTouch DOWN");
                         v.setAlpha(0.5f);
-                        new WalkTask(motionProxy).execute(0.0f,-0.2f);
+                        new WalkTask(motionProxy).execute(0.0f, 0.0f, -0.2f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_UP){
                         Log.v("Main", "Called right button onTouch UP");
                         v.setAlpha(1f);
-                        new WalkTask(motionProxy).execute(0.0f,0.0f);
+                        new WalkTask(motionProxy).execute(0.0f, 0.0f, 0.0f);
                         return true;
                     }
                     return false;
@@ -237,13 +237,13 @@ public class MainActivity extends FragmentActivity
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN){
                         Log.v("Main", "Called left button onTouch DOWN");
-                        new WalkTask(motionProxy).execute(0.0f,0.2f);
+                        new WalkTask(motionProxy).execute(0.0f, 0.0f, 0.2f);
                         v.setAlpha(0.5f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_UP){
                         Log.v("Main", "Called left button onTouch UP");
-                        new WalkTask(motionProxy).execute(0.0f,0.0f);
+                        new WalkTask(motionProxy).execute(0.0f, 0.0f, 0.0f);
                         v.setAlpha(1f);
                         return true;
                     }
@@ -256,13 +256,13 @@ public class MainActivity extends FragmentActivity
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN){
                         Log.v("Main", "Called up button onTouch DOWN");
-                        new WalkTask(motionProxy).execute(0.2f, 0.0f);
+                        new WalkTask(motionProxy).execute(0.2f, 0.0f, 0.0f);
                         v.setAlpha(0.5f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_UP){
                         Log.v("Main", "Called up button onTouch UP");
-                        new WalkTask(motionProxy).execute(0.0f, 0.0f);
+                        new WalkTask(motionProxy).execute(0.0f, 0.0f, 0.0f);
                         v.setAlpha(1f);
                         return true;
                     }
@@ -275,13 +275,13 @@ public class MainActivity extends FragmentActivity
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN){
                         Log.v("Main", "Called down button onTouch DOWN");
-                        new WalkTask(motionProxy).execute(-0.2f, 0.0f);
+                        new WalkTask(motionProxy).execute(-0.2f, 0.0f, 0.0f);
                         v.setAlpha(0.5f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_UP){
                         Log.v("Main", "Called down button onTouch UP");
-                        new WalkTask(motionProxy).execute(0.0f, 0.0f);
+                        new WalkTask(motionProxy).execute(0.0f, 0.0f, 0.0f);
                         v.setAlpha(1f);
                         return true;
                     }
