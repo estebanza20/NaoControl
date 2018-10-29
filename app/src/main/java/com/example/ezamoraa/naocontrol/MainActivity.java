@@ -4,6 +4,7 @@ package com.example.ezamoraa.naocontrol;
 import com.aldebaran.qi.DynamicCallException;
 import com.aldebaran.qi.Session;
 import com.aldebaran.qi.helper.proxies.ALMotion;
+import com.aldebaran.qi.helper.proxies.ALRobotPosture;
 import com.aldebaran.qi.helper.proxies.ALTextToSpeech;
 import com.aldebaran.qi.helper.proxies.ALVideoDevice;
 
@@ -32,6 +33,7 @@ public class MainActivity extends FragmentActivity
     private Session session = null;
     public ALMotion motionProxy;
     private ALTextToSpeech speechProxy;
+    public ALRobotPosture postureProxy;
     private ALVideoDevice videoProxy;
 
     ImageView videoImg;
@@ -330,6 +332,7 @@ public class MainActivity extends FragmentActivity
 
                 speechProxy = new ALTextToSpeech(session);
                 motionProxy = new ALMotion(session);
+                postureProxy = new ALRobotPosture(session);
                 videoProxy = new ALVideoDevice(session);
 
                 ((Button) findViewById(R.id.buttonConnect)).setText(getString(R.string.button_disconnect));
@@ -362,7 +365,7 @@ public class MainActivity extends FragmentActivity
 
     public void onStandUpButtonClick(View view) {
         try {
-            new MoveActionTask(motionProxy).execute("standUp");
+            new MoveActionTask(motionProxy, postureProxy).execute("standUp");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -370,7 +373,7 @@ public class MainActivity extends FragmentActivity
 
     public void onSitDownButtonClick(View view) {
         try {
-            new MoveActionTask(motionProxy).execute("sitDown");
+            new MoveActionTask(motionProxy, postureProxy).execute("sitDown");
         } catch (Exception e) {
             e.printStackTrace();
         }
