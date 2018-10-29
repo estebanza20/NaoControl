@@ -8,6 +8,7 @@ import com.aldebaran.qi.helper.proxies.ALRobotPosture;
 import com.aldebaran.qi.helper.proxies.ALTextToSpeech;
 import com.aldebaran.qi.helper.proxies.ALVideoDevice;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -327,16 +328,8 @@ public class MainActivity extends FragmentActivity
         try {
             if (((Button) findViewById(R.id.buttonConnect)).getText() == getString(R.string.button_connect)) {
                 session = new Session();
-                session.connect(url).sync();
-                session.onDisconnected("onDisconnected", this);
-
-                speechProxy = new ALTextToSpeech(session);
-                motionProxy = new ALMotion(session);
-                postureProxy = new ALRobotPosture(session);
-                videoProxy = new ALVideoDevice(session);
-
-                ((Button) findViewById(R.id.buttonConnect)).setText(getString(R.string.button_disconnect));
-                showControlWindow();
+                ConnectionTask connectionTask = new ConnectionTask();
+                connectionTask.execute(url);
             } else {
                 if (session != null && session.isConnected())
                     session.close();
@@ -344,6 +337,58 @@ public class MainActivity extends FragmentActivity
         } catch (Exception e) {
             Toast toast = Toast.makeText(context, "Connection Error : " + e.getMessage(), Toast.LENGTH_SHORT);
             toast.show();
+        }
+    }
+
+    private class ConnectionTask extends AsyncTask<String, Void, Boolean> {
+
+        private ProgressDialog dialog;
+
+        public ConnectionTask(){
+            dialog = new ProgressDialog(MainActivity.this);
+        }
+
+
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            this.dialog.setMessage("Trying to connect...");
+            this.dialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... url) {
+            try {
+                System.out.println(url[0]);
+                session.connect(url[0]).sync();
+                session.onDisconnected("onDisconnected", MainActivity.this);
+                return true;
+            }
+            catch (Exception e){
+                session = null;
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean sessionConnected) {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            if (sessionConnected){
+                try {
+                    speechProxy = new ALTextToSpeech(session);
+                    motionProxy = new ALMotion(session);
+                    postureProxy = new ALRobotPosture(session);
+                    videoProxy = new ALVideoDevice(session);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                ((Button) findViewById(R.id.buttonConnect)).setText(getString(R.string.button_disconnect));
+                showControlWindow();
+            }
         }
     }
 
