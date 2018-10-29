@@ -30,6 +30,7 @@ public class MainActivity extends FragmentActivity
     private ALMotion motion;
     private ALTextToSpeech speech;
     private OrientationManager orientation;
+    private WalkTask walk;
 
 
     private LogInFragment logIn = new LogInFragment();
@@ -96,27 +97,6 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    public class WalkTask extends AsyncTask<Float, Void, Boolean > {
-        ALMotion motion;
-
-        public WalkTask(ALMotion motion){
-            this.motion = motion;
-        }
-
-        @Override
-        protected Boolean doInBackground(Float... params) {
-            float Xmovement = params[0];
-            float Ymovement = params[1];
-            try {
-                this.motion.moveToward(Xmovement, Ymovement, 0f);
-                return true;
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-    }
-
     public void setListeners()
     {
         Button rightButton = findViewById(R.id.button_right);
@@ -134,11 +114,11 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        new WalkTask(motion).execute(0.0f,-0.2f);
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,-0.2f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        new WalkTask(motion).execute(0.0f,0.0f);
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,0.0f);
                         return true;
                     }
                     return false;
@@ -148,11 +128,11 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        new WalkTask(motion).execute(0.0f,0.2f);
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,0.2f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        new WalkTask(motion).execute(0.0f,0.0f);
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,0.0f);
                         return true;
                     }
                     return false;
@@ -162,11 +142,11 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        new WalkTask(motion).execute(0.2f, 0.0f);
+                        walk = (WalkTask) new WalkTask(motion).execute(0.2f, 0.0f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        new WalkTask(motion).execute(0.0f, 0.0f);
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f, 0.0f);
                         return true;
                     }
                     return false;
@@ -176,11 +156,11 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        new WalkTask(motion).execute(-0.2f, 0.0f);
+                        walk = (WalkTask) new WalkTask(motion).execute(-0.2f, 0.0f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        new WalkTask(motion).execute(0.0f, 0.0f);
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f, 0.0f);
                         return true;
                     }
                     return false;
