@@ -8,15 +8,18 @@ import com.aldebaran.qi.helper.proxies.ALMotion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class HeadAnglesTask extends AsyncTask<Void, Void, Void> {
     private ALMotion motion;
     private OrientationManager orientation;
-    private static final int SLEEP_MS = 100;
+    private static final int SLEEP_MS = 50;
+    private ReentrantLock sLock;
 
-    public HeadAnglesTask(OrientationManager orientation, ALMotion motion){
-        this.motion = motion;
-        this.orientation = orientation;
+    public HeadAnglesTask(OrientationManager orientationManager, ALMotion motionProxy, ReentrantLock sessionLock){
+        motion = motionProxy;
+        orientation = orientationManager;
+        sLock = sessionLock;
     }
 
     @Override
@@ -31,11 +34,16 @@ public class HeadAnglesTask extends AsyncTask<Void, Void, Void> {
 
         while(!this.isCancelled()) {
             try {
-                angles.set(0, orientation.filteredYaw);
-                angles.set(1, orientation.filteredPitch);
-                Log.v("HeadAngles", "pitch:" + Float.toString(orientation.filteredPitch));
-                Log.v("HeadAngles", "yaw:" + Float.toString(orientation.filteredYaw));
-                this.motion.setAngles(names, angles, 0.5f);
+                angles.set(0, orientation.yaw);
+                angles.set(1, orientation.pitch);
+                Log.v("HeadAngles", "pitch:" + Float.toString(orientation.pitch));
+                Log.v("HeadAngles", "yaw:" + Float.toString(orientation.yaw));
+                sLock.lock();
+                try {
+                    motion.setAngles(names, angles, 0.8f);
+                } finally {
+                    sLock.unlock();
+                }
                 Thread.sleep(SLEEP_MS);
             } catch (Exception e) {
                 e.printStackTrace();

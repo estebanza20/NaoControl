@@ -5,8 +5,10 @@ import com.aldebaran.qi.DynamicCallException;
 import com.aldebaran.qi.Session;
 import com.aldebaran.qi.helper.proxies.ALMotion;
 import com.aldebaran.qi.helper.proxies.ALTextToSpeech;
+import com.aldebaran.qi.helper.proxies.ALVideoDevice;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,36 +17,49 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MainActivity extends FragmentActivity
 {
     private static String TAG = "NaoControl";
 
     private Session session = null;
-    private ALMotion motion;
-    private ALTextToSpeech speech;
-    private OrientationManager orientation;
-    private WalkTask walk;
+    public ALMotion motionProxy;
+    private ALTextToSpeech speechProxy;
+    private ALVideoDevice videoProxy;
 
+    ImageView videoImg;
+
+    private OrientationManager orientation;
+    private HeadAnglesTask headTask;
+    private VideoStreamTask videoTask;
 
     private LogInFragment logIn = new LogInFragment();
     private ControlFragment control = new ControlFragment();
     private VideoFragment video = new VideoFragment();
 
+    private boolean headAnglesActive = false;
+    private boolean videoStreamActive = false;
+
+    private ReentrantLock sessionLock;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        this.setListeners();
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
         setContentView(R.layout.main);
         if (savedInstanceState == null) {
+            orientation = new OrientationManager(this);
+            sessionLock = new ReentrantLock();
+
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.allLayout, this.control)
                     .commit();
@@ -60,10 +75,16 @@ public class MainActivity extends FragmentActivity
             getSupportFragmentManager().beginTransaction()
                     .hide(this.video)
                     .commit();
+            configureMoveButtons();
         }
     }
 
-    public void ConnectActivity(View view)
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    public void Connect(View view)
     {
         EditText editIp = findViewById(R.id.editTextIp);
         EditText editPort = findViewById(R.id.editTextPort);
@@ -73,7 +94,12 @@ public class MainActivity extends FragmentActivity
         try
         {
             if (((Button) findViewById(R.id.buttonConnect)).getText() == getString(R.string.button_connect)) {
-                //session.connect(url).sync();
+                session.connect(url).sync();
+
+                speechProxy = new ALTextToSpeech(session);
+                motionProxy = new ALMotion(session);
+                videoProxy = new ALVideoDevice(session);
+
                 ((Button) findViewById(R.id.buttonConnect)).setText(getString(R.string.button_disconnect));
                 this.showControlWindow();
             } else {
@@ -90,14 +116,13 @@ public class MainActivity extends FragmentActivity
     {
         EditText newMessage = findViewById(R.id.editTextSpeak);
         try {
-            speech = new ALTextToSpeech(session);
-            speech.say(newMessage.getText().toString());
+            speechProxy.say(newMessage.getText().toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void setListeners()
+    public void configureMoveButtons()
     {
         Button rightButton = findViewById(R.id.button_right);
         Button leftButton = findViewById(R.id.button_left);
@@ -107,70 +132,73 @@ public class MainActivity extends FragmentActivity
         Button standUpButton = findViewById(R.id.standUpButton);
 
         try {
+            motionProxy.wakeUp();
 
-            motion = new ALMotion(session);
-            motion.wakeUp(); //robot will wake up and go to initial position
             rightButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,-0.2f);
+                        new WalkTask(motionProxy).execute(0.0f,-0.2f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,0.0f);
+                        new WalkTask(motionProxy).execute(0.0f,0.0f);
                         return true;
                     }
                     return false;
                 }
             });
+
             leftButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,0.2f);
+                        new WalkTask(motionProxy).execute(0.0f,0.2f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,0.0f);
+                        new WalkTask(motionProxy).execute(0.0f,0.0f);
                         return true;
                     }
                     return false;
                 }
             });
+
             upButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        walk = (WalkTask) new WalkTask(motion).execute(0.2f, 0.0f);
+                        new WalkTask(motionProxy).execute(0.2f, 0.0f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        walk = (WalkTask) new WalkTask(motion).execute(0.0f, 0.0f);
+                        new WalkTask(motionProxy).execute(0.0f, 0.0f);
                         return true;
                     }
                     return false;
                 }
             });
+
             downButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
-                        walk = (WalkTask) new WalkTask(motion).execute(-0.2f, 0.0f);
+                        new WalkTask(motionProxy).execute(-0.2f, 0.0f);
                         return true;
                     }
                     else if (event.getAction() == MotionEvent.ACTION_DOWN){
-                        walk = (WalkTask) new WalkTask(motion).execute(0.0f, 0.0f);
+                        new WalkTask(motionProxy).execute(0.0f, 0.0f);
                         return true;
                     }
                     return false;
                 }
             });
+
             standUpButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
-                        motion.wakeUp(); //robot will wake up and go to initial position
+                        motionProxy.wakeUp();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
@@ -181,7 +209,7 @@ public class MainActivity extends FragmentActivity
                 @Override
                 public void onClick(View v) {
                     try {
-                        motion.rest();//The robot will rest and go to a relax and safe position
+                        motionProxy.rest();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
@@ -233,7 +261,14 @@ public class MainActivity extends FragmentActivity
     }
 
     public void BackControlWindow(View view) {
+        Log.v("Main", "Call back control window");
         if (((Button) findViewById(R.id.buttonConnect)).getText() == getString(R.string.button_disconnect)) {
+            if (videoStreamActive) {
+                videoTask.cancel(false);
+                videoImg.setImageBitmap(null);
+                videoStreamActive = false;
+            }
+
             this.showControlWindow();
         }
     }
@@ -293,10 +328,50 @@ public class MainActivity extends FragmentActivity
                 getSupportFragmentManager().beginTransaction()
                         .show(this.video)
                         .commit();
+
+                videoImg = findViewById(R.id.video_image);
+                videoTask = new VideoStreamTask(videoImg, videoProxy, motionProxy, orientation, sessionLock);
+                videoStreamActive = true;
+                videoTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
             catch(Exception e){
                 e.printStackTrace();
             }
         }
+    }
+
+    public void onHeadAnglesButtonClick(View view) {
+        Button button1 = findViewById(R.id.button_control_head);
+        Button button2 = findViewById(R.id.button_video_head);
+        String text;
+        Integer bgColor, textColor;
+        if (!headAnglesActive) {
+            orientation.start();
+            try {
+                headTask = new HeadAnglesTask(orientation, motionProxy, sessionLock);
+                headTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            text = getResources().getString(R.string.head_control_on);
+            bgColor = getResources().getColor(R.color.md_green_700);
+            textColor = getResources().getColor(R.color.md_text_white);
+            headAnglesActive = true;
+        } else {
+            headTask.cancel(false);
+            orientation.stop();
+            text = getResources().getString(R.string.head_control_off);
+            bgColor = getResources().getColor(R.color.md_red_700);
+            textColor = getResources().getColor(R.color.md_text_white);
+            headAnglesActive = false;
+        }
+
+        button1.setText(text);
+        button1.setTextColor(textColor);
+        button1.setBackgroundColor(bgColor);
+
+        button2.setText(text);
+        button2.setTextColor(textColor);
+        button2.setBackgroundColor(bgColor);
     }
 }

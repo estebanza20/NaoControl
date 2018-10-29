@@ -2,14 +2,12 @@
 <resources>
     <string name="hello">NaoControl</string>
     <string name="app_name">NaoControl</string>
-    <string name="defaultIP">192.168.100.44</string>
-    <string name="defaultPort">9559</string>
-    <string name="button_ip">IP</string>
-    <string name="button_port">PORT</string>
+    <string name="button_ip">192.168.100.44</string>
+    <string name="button_port">9559</string>
     <string name="button_connect">Connect</string>
-    <string name="connecting_message">Pleas wait. Trying to connect</string>
+    <string name="connecting_message">Please wait. Trying to connect</string>
     <string name="not_connected">Could not connect</string>
-    <string name="connected">Sucessfully Connected</string>
+    <string name="connected">Successfully Connected</string>
     <string name="button_disconnect">Disconnect</string>
     <string name="button_speak">Speak</string>
     <string name="button_right">Right</string>
@@ -20,4 +18,6 @@
     <string name="button_head">Head</string>
     <string name="speak_message">New message</string>
     <string name="button_back">Back</string>
+    <string name="head_control_on">Head control (ON)</string>
+    <string name="head_control_off">Head control (OFF)</string>
 </resources>
