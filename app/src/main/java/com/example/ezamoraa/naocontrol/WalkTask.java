@@ -17,8 +17,9 @@ public class WalkTask extends AsyncTask<Float, Void, Boolean > {
     protected Boolean doInBackground(Float... params) {
         float Xmovement = params[0];
         float Ymovement = params[1];
+        float Amovement = params[2];
         try {
-            motion.moveToward(Xmovement, Ymovement, 0f);
+            motion.moveToward(Xmovement, Ymovement, Amovement);
             return true;
         } catch (ExecutionException e) {
             e.printStackTrace();
