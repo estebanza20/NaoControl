@@ -340,15 +340,13 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    private class ConnectionTask extends AsyncTask<String, Void, Boolean> {
+    private class ConnectionTask extends AsyncTask<String, Void, Session> {
 
         private ProgressDialog dialog;
 
         public ConnectionTask(){
             dialog = new ProgressDialog(MainActivity.this);
         }
-
-
 
         @Override
         protected void onPreExecute() {
@@ -358,36 +356,39 @@ public class MainActivity extends FragmentActivity
         }
 
         @Override
-        protected Boolean doInBackground(String... url) {
+        protected Session doInBackground(String... url) {
             try {
                 System.out.println(url[0]);
                 session.connect(url[0]).sync();
                 session.onDisconnected("onDisconnected", MainActivity.this);
-                return true;
+                return session;
             }
             catch (Exception e){
-                session = null;
                 e.printStackTrace();
             }
-            return false;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Boolean sessionConnected) {
+        protected void onPostExecute(Session retSession) {
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
-            if (sessionConnected){
+            if (retSession != null && retSession.isConnected()){
                 try {
-                    speechProxy = new ALTextToSpeech(session);
-                    motionProxy = new ALMotion(session);
-                    postureProxy = new ALRobotPosture(session);
-                    videoProxy = new ALVideoDevice(session);
+                    speechProxy = new ALTextToSpeech(retSession);
+                    motionProxy = new ALMotion(retSession);
+                    postureProxy = new ALRobotPosture(retSession);
+                    videoProxy = new ALVideoDevice(retSession);
+
+                    ((Button) findViewById(R.id.buttonConnect)).setText(getString(R.string.button_disconnect));
+                    showControlWindow();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                ((Button) findViewById(R.id.buttonConnect)).setText(getString(R.string.button_disconnect));
-                showControlWindow();
+            } else {
+                Toast toast = Toast.makeText(MainActivity.this, "Connection Error", Toast.LENGTH_SHORT);
+                toast.show();
             }
         }
     }
