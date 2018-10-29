@@ -1,16 +1,16 @@
 package com.example.ezamoraa.naocontrol;
 
 
+import com.aldebaran.qi.DynamicCallException;
 import com.aldebaran.qi.Session;
 import com.aldebaran.qi.helper.proxies.ALMotion;
-import com.aldebaran.qi.helper.proxies.ALRobotPosture;
 import com.aldebaran.qi.helper.proxies.ALTextToSpeech;
 
-import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,6 +20,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 
+import java.util.concurrent.ExecutionException;
+
 public class MainActivity extends FragmentActivity
 {
     private static String TAG = "NaoControl";
@@ -28,6 +30,7 @@ public class MainActivity extends FragmentActivity
     private ALMotion motion;
     private ALTextToSpeech speech;
     private OrientationManager orientation;
+    private WalkTask walk;
 
 
     private LogInFragment logIn = new LogInFragment();
@@ -37,6 +40,7 @@ public class MainActivity extends FragmentActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        this.setListeners();
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
         setContentView(R.layout.main);
@@ -89,6 +93,102 @@ public class MainActivity extends FragmentActivity
             speech = new ALTextToSpeech(session);
             speech.say(newMessage.getText().toString());
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setListeners()
+    {
+        Button rightButton = findViewById(R.id.button_right);
+        Button leftButton = findViewById(R.id.button_left);
+        Button upButton = findViewById(R.id.button_up);
+        Button downButton = findViewById(R.id.button_down);
+        Button sitButton = findViewById(R.id.sitButton);
+        Button standUpButton = findViewById(R.id.standUpButton);
+
+        try {
+
+            motion = new ALMotion(session);
+            motion.wakeUp(); //robot will wake up and go to initial position
+            rightButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_UP){
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,-0.2f);
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,0.0f);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            leftButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_UP){
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,0.2f);
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f,0.0f);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            upButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_UP){
+                        walk = (WalkTask) new WalkTask(motion).execute(0.2f, 0.0f);
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f, 0.0f);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            downButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_UP){
+                        walk = (WalkTask) new WalkTask(motion).execute(-0.2f, 0.0f);
+                        return true;
+                    }
+                    else if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        walk = (WalkTask) new WalkTask(motion).execute(0.0f, 0.0f);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            standUpButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        motion.wakeUp(); //robot will wake up and go to initial position
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            sitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        motion.rest();//The robot will rest and go to a relax and safe position
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        } catch (Exception e){
             e.printStackTrace();
         }
     }
